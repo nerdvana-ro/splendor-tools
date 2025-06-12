@@ -1,43 +1,21 @@
 # Protocol de interacțiune
 
-## Codificarea pieselor
+## Invocarea clientului
 
-Cele 16 piese sînt codificate prin numerele de la 0 la 15. Cei 4 biți se referă la următoarele atribute:
+Arbitrul va executa programul vostru, numit și **client**, de fiecare dată cînd este rîndul său la mutare.
 
-* Bitul 3: valoarea 0 pentru piese negre, 1 pentru piese albe.
-* Bitul 2: valoarea 0 pentru piese mici, 1 pentru piese mari.
-* Bitul 1: valoarea 0 pentru piese rotunde, 1 pentru piese pătrate.
-* Bitul 0: valoarea 0 pentru piese pline, 1 pentru piese găurite.
+Arbitrul îi va trimite clientului, la intrarea standard, situația jocului conform specificațiilor de mai jos. Clientul trebuie să tipărească la ieșirea standard o acțiune, conform specificațiilor de mai jos.
 
-Nu este obligatoriu să adoptați această codificare (nici pe oricare alta). Puteți opera abstract, pe biți. Dar este codificarea pe care o adoptă vizualizarea grafică a partidelor.
+Clientul poate tipări orice mesaje la eroarea standard (`cerr` / `stderr`). Arbitrul le va ignora pe toate, cu excepția celor care încep cu prefixul `kibitz<spațiu>`. Pe acestea, arbitrul le va include în partida salvată. Puteți chibița orice doriți (sau nimic) despre numărul de poziții analizate, scoruri, motivul alegerii acțiunii pe care ați ales-o etc.
 
-Valoarea specială „-1” are ocazional semnificația „nicio piesă”.
+Clientul are la dispoziție 10 secunde per mutare și poate folosi oricîtă memorie în limita RAM-ului (laptopul meu are 16 GB).
 
-## Codificarea pătratelor
+Dacă clientul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va face o acțiune specială, pas, adică clientul nu va face nicio acțiune.
 
-Pătratele tablei sînt codificate de la stînga la dreapta și de sus în jos prin valorile de la 0 la 15. Așadar, indicii pătratelor sînt:
+## Datele de intrare
 
-```
- 0  1  2  3
- 4  5  6  7
- 8  9 10 11
-12 13 14 15
-```
-
-Valoarea specială „-1” are ocazional semnificația „nicăieri”.
-
-## Invocarea programului vostru
-
-Programul vostru va fi invocat ori de cîte ori este rîndul lui să mute. El va primi în fișierul `input.txt` situația jocului astfel:
+Datele de intrare au următorul format (fără porțiunile de la `//` pînă la sfîrșitul liniei, care sînt clarificări)
 
 ```
-p0 p1 ... p15
-hand
+num_players                      // Numărul de jucători, între 1 și 4.
 ```
-
-Unde
-
-* _p0 ... p15_ reprezintă valorile pieselor din cele 16 pătrate ale tablei. Dacă un pătrat este gol, valoarea _p_ corespunzătoare va fi -1.
-* _hand_ reprezintă piesa din mînă, pe care v-a oferit-o adversarul.
-
-La prima mutare, tabla va consta doar din valori -1, iar _hand_ va avea valoarea -1.
