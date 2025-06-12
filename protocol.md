@@ -14,8 +14,13 @@ Dacă clientul se termină anormal, depășește timpul sau încearcă să facă
 
 ## Datele de intrare
 
-Datele de intrare au următorul format (fără porțiunile de la `//` pînă la sfîrșitul liniei, care sînt clarificări)
+Datele de intrare au următorul format, fără linii goale și fără comentarii, care există doar pentru clarificări
 
 ```
-num_players                      // Numărul de jucători, între 1 și 4.
+// Numărul de jucători, între 1 și 4.
+// Numărul de ordine al clientului vostru, între 1 și num_players.
+num_players your_id
+
+// Numărul rundei curente, indexată de la 1.
+round_number
 ```
