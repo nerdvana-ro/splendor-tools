@@ -31,4 +31,9 @@ class Deck {
     }
     Log::debug('    în pachet: %d', [ count($this->faceDown) ]);
   }
+
+  function asInputFile(): string {
+    $up = array_pad($this->faceUp, Config::NUM_FACE_UP_CARDS, 0);
+    return trim(count($this->faceDown) . ' ' . implode(' ', $up));
+  }
 }

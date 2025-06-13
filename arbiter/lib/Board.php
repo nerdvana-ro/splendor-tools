@@ -6,7 +6,7 @@ class Board {
   public array $nobles;
 
   function __construct(int $numPlayers) {
-    $this->chips = array_fill(0, 5, Config::SUPPLY[$numPlayers]['chips']);
+    $this->chips = array_fill(0, Config::NUM_COLORS, Config::SUPPLY[$numPlayers]['chips']);
     $this->chips[] = Config::NUM_GOLD;
 
     $r = Config::CARD_LEVEL_RANGES;
@@ -30,6 +30,16 @@ class Board {
     }
     $str = implode(' ', $this->nobles);
     Log::info('Am generat nobilii %s.', [ $str ]);
+  }
+
+  function asInputFile(): string {
+    $l = [];
+    $l[] = implode(' ', $this->chips);
+    foreach ($this->decks as $d) {
+      $l[] = $d->asInputFile();
+    }
+    $l[] = trim(count($this->nobles) . ' ' . implode(' ', $this->nobles));
+    return implode("\n", $l);
   }
 
   function print(): void {

@@ -28,6 +28,7 @@ class Config {
     [ 71, 90 ],
   ];
   const NUM_FACE_UP_CARDS = 4;
+  const ENDGAME_SCORE = 15;
 
   // Limite în funcție de numărul de jucători.
   const SUPPLY = [
