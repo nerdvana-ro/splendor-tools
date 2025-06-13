@@ -17,6 +17,7 @@ function main(): void {
     $args = new Args();
     $args->parse();
     Card::loadCsv(__DIR__ . '/cards.csv');
+    Noble::loadCsv(__DIR__ . '/nobles.csv');
     $game = new Game($args);
     $game->run();
   } catch (SplendorException $e) {

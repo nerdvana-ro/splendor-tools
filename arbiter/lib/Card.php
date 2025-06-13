@@ -19,7 +19,6 @@ class Card {
     foreach ($csv as $rec) {
       self::$cards[] = new Card($rec);
     }
-    var_dump(self::$cards);
   }
 
   static function get(int $index): Card {

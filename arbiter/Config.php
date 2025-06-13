@@ -19,6 +19,7 @@ class Config {
   const NUM_COLORS = 5;
   const NUM_GOLD = 5;
   const NUM_NOBLES = 10;
+  const NOBLE_POINTS = 3;
   const CARD_LEVELS = 3;
   const CARD_LEVEL_RANGES = [
     [], // nivelurile sînt indexate de la 1
@@ -35,21 +36,4 @@ class Config {
     '3' => [ 'chips' => 5, 'nobles' => 4 ],
     '4' => [ 'chips' => 7, 'nobles' => 5 ],
   ];
-
-  const NOBLES = [
-    // Ordinea culorilor: roșu, verde, albastru, alb, negru
-    [], // nobilii sînt indexați de la 1
-    [ 4, 4, 0, 0, 0 ],
-    [ 0, 4, 4, 0, 0 ],
-    [ 0, 0, 4, 4, 0 ],
-    [ 0, 0, 0, 4, 4 ],
-    [ 4, 0, 0, 0, 4 ],
-    [ 3, 3, 3, 0, 0 ],
-    [ 0, 3, 3, 3, 0 ],
-    [ 0, 0, 3, 3, 3 ],
-    [ 3, 0, 0, 3, 3 ],
-    [ 3, 3, 0, 0, 3 ],
-  ];
-  const NOBLE_POINTS = 3;
-
 }

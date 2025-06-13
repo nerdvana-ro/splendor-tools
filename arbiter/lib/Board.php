@@ -41,10 +41,11 @@ class Board {
   function printNobles(): void {
     Log::debug("======== Nobili:");
     foreach ($this->nobles as $id) {
+      $noble = Noble::get($id);
       $str = '';
       for ($col = 0; $col < Config::NUM_COLORS; $col++) {
-        if (Config::NOBLES[$id][$col]) {
-          $str .= Str::chips($col, Config::NOBLES[$id][$col]);
+        if ($noble->cost[$col]) {
+          $str .= Str::chips($col, $noble->cost[$col]);
           $str .= ' ';
         }
       }
