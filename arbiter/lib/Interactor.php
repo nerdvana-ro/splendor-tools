@@ -36,6 +36,6 @@ class Interactor {
       Log::warn('Clientul s-a terminat cu codul %d.', [ $resultCode ]);
     }
 
-    return self::readOutputFile($choices);
+    return self::readOutputFile();
   }
 }
