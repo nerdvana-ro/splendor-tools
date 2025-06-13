@@ -25,7 +25,7 @@ Datele de intrare au următorul format, fără linii goale și fără comentarii
 // Numărul de ordine al clientului vostru, între 0 și num_players - 1.
 num_players your_id
 
-// Numărul rundei curente, indexată de la 1.
+// Numărul rundei curente, indexată de la 0.
 round_number
 ```
 
