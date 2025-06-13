@@ -129,7 +129,7 @@ Acțiunile 1-3 îi aduc clientului jetoane suplimentare. Dacă clientul ajunge a
 
 ### Acțiuni incorecte
 
-Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incorecte. Ele sînt înlocuite cu acțiunea „pas” și nu afectează tabla de joc în niciun fel. Exemple:
+Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incorecte. Ele sînt înlocuite cu acțiunea „pas” și nu afectează starea jocului în niciun fel. Exemple:
 
 * Încercarea de a lua 3 jetoane, din care două au aceeași culoare.
 * Încercarea de a lua 2 jetoane de aceeași culoare dintr-un teanc insuficient de mare.
