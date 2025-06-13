@@ -9,4 +9,8 @@ class Player {
     $this->name = $name;
     Log::info('Am adăugat jucătorul %s cu binarul %s.', [ $name, $binary ]);
   }
+
+  function print(int $myId): void {
+    Log::debug('======== Jucătorul %d (%s)', [ $myId, $this->name ]);
+  }
 }

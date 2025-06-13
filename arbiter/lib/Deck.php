@@ -14,4 +14,21 @@ class Deck {
     $str2 = implode(' ', $this->faceDown);
     Log::info('Am generat pachetul [%s] [%s]', [ $str1, $str2 ]);
   }
+
+  function print(): void {
+    foreach ($this->faceUp as $id) {
+      $card = Card::get($id);
+      $str = sprintf('    [#%02d]    %d      ', $id, $card->points);
+      $str .= Str::block($card->color);
+      $str .= '     ';
+      for ($col = 0; $col < Config::NUM_COLORS; $col++) {
+        if ($card->cost[$col]) {
+          $str .= Str::chips($col, $card->cost[$col]);
+          $str .= ' ';
+        }
+      }
+      Log::debug($str);
+    }
+    Log::debug('    în pachet: %d', [ count($this->faceDown) ]);
+  }
 }

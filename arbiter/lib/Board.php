@@ -9,10 +9,11 @@ class Board {
     $this->chips = array_fill(0, 5, Config::SUPPLY[$numPlayers]['chips']);
     $this->chips[] = Config::NUM_GOLD;
 
+    $r = Config::CARD_LEVEL_RANGES;
     $this->decks = [
-      new Deck(Config::FIRST_LEVEL_1_CARD, Config::LAST_LEVEL_1_CARD),
-      new Deck(Config::FIRST_LEVEL_2_CARD, Config::LAST_LEVEL_2_CARD),
-      new Deck(Config::FIRST_LEVEL_3_CARD, Config::LAST_LEVEL_3_CARD),
+      new Deck($r[1][0], $r[1][1]),
+      new Deck($r[2][0], $r[2][1]),
+      new Deck($r[3][0], $r[3][1]),
     ];
 
     $noblesInPlay = Config::SUPPLY[$numPlayers]['nobles'];
@@ -30,4 +31,48 @@ class Board {
     $str = implode(' ', $this->nobles);
     Log::info('Am generat nobilii %s.', [ $str ]);
   }
+
+  function print(): void {
+    $this->printNobles();
+    $this->printCards();
+    $this->printChips();
+  }
+
+  function printNobles(): void {
+    Log::debug("======== Nobili:");
+    foreach ($this->nobles as $id) {
+      $str = '';
+      for ($col = 0; $col < Config::NUM_COLORS; $col++) {
+        if (Config::NOBLES[$id][$col]) {
+          $str .= Str::chips($col, Config::NOBLES[$id][$col]);
+          $str .= ' ';
+        }
+      }
+      Log::debug("    [#%2d] %s", [ $id, $str ]);
+    }
+  }
+
+  function printCards(): void {
+    Log::debug('======== Cărți:');
+    Log::debug('      ID  puncte culoare  cost');
+    for ($level = Config::CARD_LEVELS - 1; $level >= 0; $level--) {
+      $this->decks[$level]->print();
+      if ($level) {
+        Log::debug('    ' . str_repeat('-', 40));
+      }
+    }
+  }
+
+  function printChips(): void {
+    Log::debug("======== Jetoane:");
+    $str = '    ';
+    for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
+      if ($this->chips[$col]) {
+        $str .= Str::chips($col, $this->chips[$col]);
+        $str .= ' ';
+      }
+    }
+    Log::debug($str);
+  }
+
 }

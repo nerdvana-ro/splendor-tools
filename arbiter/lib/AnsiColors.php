@@ -16,4 +16,9 @@ class AnsiColors {
   // const SUCCESS = "\e[32m";
   // const INFO = "\e[36m";
   // const BRIGHT = "\e[30m";
+
+  // Pentru jetoane
+  const CHIPS = [
+    "\e[91m", "\e[92m", "\e[94m", "\e[97m", "\e[90m", "\e[93m",
+  ];
 }

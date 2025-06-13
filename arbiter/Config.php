@@ -9,6 +9,9 @@ class Config {
   // arbitrul va scrie pe ecran mai multe informații de debug.
   const LOG_LEVEL = Log::DEBUG;
 
+  const CHIP_CHAR = '◉';
+  const BLOCK_CHAR = '▮';
+
   /**
    * Constante specifice jocului Splendor.
    **/
@@ -16,14 +19,14 @@ class Config {
   const NUM_COLORS = 5;
   const NUM_GOLD = 5;
   const NUM_NOBLES = 10;
-  const FIRST_LEVEL_1_CARD = 1;
-  const LAST_LEVEL_1_CARD = 40;
-  const FIRST_LEVEL_2_CARD = 41;
-  const LAST_LEVEL_2_CARD = 70;
-  const FIRST_LEVEL_3_CARD = 71;
-  const LAST_LEVEL_3_CARD = 90;
+  const CARD_LEVELS = 3;
+  const CARD_LEVEL_RANGES = [
+    [], // nivelurile sînt indexate de la 1
+    [  1, 40 ],
+    [ 41, 70 ],
+    [ 71, 90 ],
+  ];
   const NUM_FACE_UP_CARDS = 4;
-
 
   // Limite în funcție de numărul de jucători.
   const SUPPLY = [
@@ -32,4 +35,21 @@ class Config {
     '3' => [ 'chips' => 5, 'nobles' => 4 ],
     '4' => [ 'chips' => 7, 'nobles' => 5 ],
   ];
+
+  const NOBLES = [
+    // Ordinea culorilor: roșu, verde, albastru, alb, negru
+    [], // nobilii sînt indexați de la 1
+    [ 4, 4, 0, 0, 0 ],
+    [ 0, 4, 4, 0, 0 ],
+    [ 0, 0, 4, 4, 0 ],
+    [ 0, 0, 0, 4, 4 ],
+    [ 4, 0, 0, 0, 4 ],
+    [ 3, 3, 3, 0, 0 ],
+    [ 0, 3, 3, 3, 0 ],
+    [ 0, 0, 3, 3, 3 ],
+    [ 3, 0, 0, 3, 3 ],
+    [ 3, 3, 0, 0, 3 ],
+  ];
+  const NOBLE_POINTS = 3;
+
 }
