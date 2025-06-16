@@ -1,17 +1,18 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include "Card.h"
+#include "ChipSet.h"
 #include "Constants.h"
 
 class Player {
- public:
-  int chips[NUM_COLORS];
-  int cards[NUM_COLORS];
+public:
+  ChipSet chips;
+  ChipSet cards;
 
   void readFromStdin();
   bool canBuy(int cardId);
-
- private:
+  ChipSet computeTake(int cardId);
 };
 
 #endif

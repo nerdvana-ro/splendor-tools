@@ -7,7 +7,7 @@ void Board::readFromStdin() {
   int num_nobles, ignored;
 
   for (int col = 0; col <= NUM_COLORS; col++) {
-    scanf("%d", &chips[col]);
+    scanf("%d", &chips.c[col]);
   }
 
   for (int l = 0; l < CARD_LEVELS; l++) {
@@ -18,4 +18,15 @@ void Board::readFromStdin() {
   }
 
   Util::ignoreArrayFromStdin(); // ignoră nobilii
+}
+
+bool Board::offers(ChipSet& take) {
+  bool enough = true;
+  for (int col = 0; col < NUM_COLORS; col++) {
+    enough &=
+      (take.c[col] <= 0) ||                                     // nu avem de luat
+      ((take.c[col] == 1) && (chips.c[col] >= 1)) ||            // avem de luat 1
+      ((take.c[col] == 2) && (chips.c[col] >= TAKE_TWO_LIMIT)); // avem de luat 2
+  }
+  return enough;
 }

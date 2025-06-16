@@ -6,6 +6,8 @@ project (doofus)
 
 set(SOURCES
     src/Board.cpp
+    src/Card.cpp
+    src/ChipSet.cpp
     src/Game.cpp
     src/Player.cpp
     src/Util.cpp

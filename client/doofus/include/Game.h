@@ -12,6 +12,14 @@ class Game {
  private:
   Board board;
   Player player;
+
+  void collectRandomChips();
+  void returnRandomChips();
+  bool tryToBuyCard();
+  bool tryToCollectForCard();
+  bool canCollectForCard(int cardId);
+  void takeAction(ChipSet& take);
+  void returnAction(ChipSet& take);
 };
 
 #endif
