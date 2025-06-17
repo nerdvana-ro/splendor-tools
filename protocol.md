@@ -12,7 +12,7 @@ Clientul are la dispoziție 10 secunde per mutare și poate folosi oricîtă mem
 
 Dacă doriți, clientul poate stoca orice date în directorul curent, în limite rezonabile (cîțiva GB). Dacă doriți să-mi trimiteți în avans niște date precalculate, trimiteți-mi-le cumva.
 
-Dacă clientul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va face o acțiune specială, pas, adică clientul nu va face nicio acțiune.
+Dacă clientul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va alege automat mutarea „pas” (adică clientul nu va face nicio acțiune).
 
 ## Datele de intrare
 
@@ -81,9 +81,7 @@ Această acțiune are formatul:
 1 num_tokens color_1 color_2 ...
 ```
 
-Este obligatoriu să luați numărul maxim de jetoane: trei dacă se poate, dacă nu două, dacă nu unul. Este considerată o mutare incorectă dacă clientul cere mai puține jetoane decît poate lua legal.
-
-În cazul rarisim cînd nu poate face nicio acțiune (nu există jetoane de luat și nu poate cumpăra / rezerva nicio carte), și numai în acest caz, clientul trebuie să aleagă această acțiune și să ceară 0 jetoane.
+Dacă doriți, puteți lua și doar două jetoane, unul singur sau chiar zero. În cazul rarisim cînd nu poate face nicio acțiune (nu există jetoane de luat și nu poate cumpăra / rezerva nicio carte), și numai în acest caz, clientul trebuie să aleagă această acțiune și să ceară 0 jetoane.
 
 ### Acțiunea „ia două jetoane de aceeași culoare”
 
@@ -135,4 +133,4 @@ Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incore
 * Încercarea de a lua 2 jetoane de aceeași culoare dintr-un teanc insuficient de mare.
 * Încercarea de a rezerva a 4-a carte.
 * Încercarea de a cumpăra o carte inexistentă.
-* Încercarea de a cumpăra o carte pentru care nu aveți jetoane
+* Încercarea de a cumpăra o carte pe care nu o clientul nu o poate plăti.
