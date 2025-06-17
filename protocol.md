@@ -78,7 +78,7 @@ Această acțiune are formatul:
 ```
 // 1 = Identificatorul acțiunii.
 // Numărul de jetoane și culorile lor.
-1 num_tokens color_1 color_2 ...
+1 num_chips color_1 color_2 ...
 ```
 
 Dacă doriți, puteți lua și doar două jetoane, unul singur sau chiar zero. În cazul rarisim cînd nu poate face nicio acțiune (nu există jetoane de luat și nu poate cumpăra / rezerva nicio carte), și numai în acest caz, clientul trebuie să aleagă această acțiune și să ceară 0 jetoane.
