@@ -22,13 +22,9 @@ void Game::chooseAndMakeMove() {
     return;
   }
 
-  ChipSet take = saveForSomeCard();
-  if (!take.isZero()) {
-    takeAction(take);
-    return;
-  }
-
-  takeRandomChips();
+  ChipSet take = saveForSomeCard(); // posibil zero
+  padTake(take);
+  takeAction(take);
 }
 
 int Game::getBuyableCardId() {
@@ -42,11 +38,14 @@ int Game::getBuyableCardId() {
 
 ChipSet Game::saveForSomeCard() {
   ChipSet take;
-  int i = 0;
 
-  do {
-    take = computeTake(board.cards[i++]);
-  } while (take.isZero() && (i < board.cards.size() - 1));
+  for (int card: board.cards) {
+    take = computeTake(card);
+    if (!take.isZero()) {
+      fprintf(stderr, "kibitz Strîng pentru cartea %d.\n", card);
+      return take;
+    }
+  }
 
   return take;
 }
@@ -70,40 +69,38 @@ ChipSet Game::computeTake(int cardId) {
   return take;
 }
 
-void Game::takeRandomChips() {
-  fprintf(stderr, "kibitz Trag jetoane la întîmplare.\n");
-  std::vector<int> s = board.chips.getNonEmpty();
+void Game::padTake(ChipSet& take) {
+  int cnt = take.countPositive(), max = take.getMax();
+  int bcnt = board.chips.countPositive(), bmax = board.chips.getMax();
 
-  bool worthTakingTwo =
-    (s.size() == 1) &&
-    (board.chips.c[s[0]] >= TAKE_TWO_LIMIT);
-
-  if (worthTakingTwo) {
-    printf("2 %d", s[0]);
-    player.chips.c[s[0]] += 2;
+  if (max == 2) {
+    // Am planificat deja să luăm două de aceeași culoare.
+  } else if ((max == 0) && (bcnt == 1) && (bmax >= TAKE_TWO_LIMIT)) {
+    // Încă nu am luat nimic și merită să luăm două de aceeași culoare.
+    int col = board.chips.findColorWithCount(bmax);
+    take.c[col] = 2;
   } else {
-    int toTake = Util::min(s.size(), 3);
-    Util::shuffle(s);
-    printf("1 %d", toTake);
-    for (int i = 0; i < toTake; i++) {
-      printf(" %d", s[i]);
-      player.chips.c[s[i]]++;
-    }
+    padTakeWithOnes(take);
   }
-
-  returnRandomChips();
-
-  printf("\n");
 }
 
-void Game::returnRandomChips() {
-  while (player.chips.total() > HAND_LIMIT) {
-    int col;
-    do {
-      col = Util::rand(0, NUM_COLORS - 1);
-    } while (!player.chips.c[col]);
-    printf(" %d", col);
-    player.chips.c[col]--;
+void Game::padTakeWithOnes(ChipSet& take) {
+  std::vector<int> cols;
+  for (int i = 0; i < NUM_COLORS; i++) {
+    if ((take.c[i] <= 0) && (board.chips.c[i] > 0)) {
+      cols.push_back(i);
+    }
+  }
+  Util::shuffle(cols);
+
+  int cnt = take.countPositive();
+  int limit1 = 3 - cnt;
+  int limit2 = HAND_LIMIT - player.chips.total() - cnt;
+  int toTake = Util::min(Util::min(limit1, limit2), cols.size());
+  fprintf(stderr, "kibitz Completez cu %d jetoane la întîmplare.\n", toTake);
+
+  for (int i = 0; i < toTake; i++) {
+    take.c[cols[i]] = 1;
   }
 }
 

@@ -54,16 +54,6 @@ int ChipSet::findColorWithCount(int cnt) {
   return col;
 }
 
-std::vector<int> ChipSet::getNonEmpty() {
-  std::vector<int> res;
-  for (int col = 0; col < NUM_COLORS; col++) {
-    if (c[col]) {
-      res.push_back(col);
-    }
-  }
-  return res;
-}
-
 void ChipSet::subtract(ChipSet& other) {
   for (int col = 0; col < NUM_COLORS; col++) {
     c[col] -= other.c[col];

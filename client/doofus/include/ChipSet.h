@@ -1,7 +1,6 @@
 #ifndef __CHIPSET_H__
 #define __CHIPSET_H__
 
-#include <vector>
 #include "Constants.h"
 
 class ChipSet {
@@ -15,7 +14,6 @@ public:
   int countPositive();
   int getMax();
   int findColorWithCount(int cnt);
-  std::vector<int> getNonEmpty();
   void subtract(ChipSet& other);
 
   // Scade, dar fără a trece pe minus.

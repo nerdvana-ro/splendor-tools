@@ -31,8 +31,13 @@ class Game {
   // negative pentru culorile care pot fi returnate, la nevoie.
   ChipSet computeTake(int cardId);
 
-  void takeRandomChips();
-  void returnRandomChips();
+  // Adaugă jetoane de luat la take. take este o colecție legală și care puate
+  // fi luată într-o singură tură (poate fi și zero).
+  void padTake(ChipSet& take);
+
+  // Adaugă jetoane de luat la take, știind că luăm cel mult trei jetoane de
+  // culori diferite.
+  void padTakeWithOnes(ChipSet& take);
 
   void buyAction(int card);
   void takeAction(ChipSet& take);
