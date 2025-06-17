@@ -19,11 +19,37 @@ class Game {
     $this->roundNo = 0;
   }
 
+  // Ridică SplendorException pentru mutări invalide.
+  private function validateAction(array $action): void {
+  }
+
+  private function takeTokens(array $colors, int $qty): void {
+    $chipStr = [];
+    foreach ($colors as $col) {
+      $this->players[$this->curPlayer]->chips[$col] += $qty;
+      $this->board->chips[$col] -= $qty;
+      $chipStr[] = Str::chips($col, $qty);
+    }
+
+    $chipStr = implode(' ', $chipStr);
+    Log::info('I-am dat jucătorului %d %s.', [ $this->curPlayer, $chipStr]);
+  }
+
+  private function executeAction(array $action): void {
+    $type = array_shift($action);
+    switch ($type) {
+      case 1: $this->takeTokens(array_slice($action, 1), 1); break;
+      case 2: $this->takeTokens([ $action[0] ], 2); break;
+    }
+  }
+
   private function playRound(): void {
     foreach ($this->players as $id => $p) {
       $state = $this->asInputFile();
       try {
         $action = $p->requestAction($state);
+        $this->validateAction($action);
+        $this->executeAction($action);
       } catch (SplendorException $e) {
         Log::warn('Jucătorul %d zice pas din cauza excepției: %s',
                   [ $this->curPlayer, $e->getMessage() ]);
@@ -39,6 +65,9 @@ class Game {
       if ($p->getScore() >= Config::ENDGAME_SCORE) {
         return true;
       }
+    }
+    if ($this->roundNo >= 2) {
+      return true;
     }
     return false;
   }

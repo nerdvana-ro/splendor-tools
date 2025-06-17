@@ -26,10 +26,10 @@ class Str {
       AnsiColors::DEFAULT;
   }
 
-  static function block(int $color): string {
+  static function block(int $color, int $count): string {
     return
       AnsiColors::CHIPS[$color] .
-      Config::BLOCK_CHAR .
+      str_repeat(Config::BLOCK_CHAR, $count) .
       AnsiColors::DEFAULT;
   }
 

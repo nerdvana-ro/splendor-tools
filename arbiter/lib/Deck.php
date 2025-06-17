@@ -19,7 +19,7 @@ class Deck {
     foreach ($this->faceUp as $id) {
       $card = Card::get($id);
       $str = sprintf('    [#%02d]    %d      ', $id, $card->points);
-      $str .= Str::block($card->color);
+      $str .= Str::block($card->color, 1);
       $str .= '     ';
       for ($col = 0; $col < Config::NUM_COLORS; $col++) {
         if ($card->cost[$col]) {

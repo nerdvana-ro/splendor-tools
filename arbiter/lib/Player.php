@@ -21,12 +21,17 @@ class Player {
   }
 
   function getScore(): int {
-    return 0;
+    $score = count($this->nobles) * Config::NOBLE_POINTS;
+    foreach ($this->cards as $id) {
+      $score += Card::get($id)->points;
+    }
+    return $score;
   }
 
-  function requestAction(string $gameState): void {
+  function requestAction(string $gameState): array {
     Log::info('Aștept o acțiune de la %s', [ $this->name ]);
     $tokens = Interactor::interact($this->binary, $gameState);
+    return $tokens;
   }
 
   // $reveal: Arătăm sau nu cărțile ascunse?
@@ -51,7 +56,29 @@ class Player {
     return trim(count($arr) . ' ' . implode(' ', $arr));
   }
 
+  function getCardQuantities(): array {
+    $res = array_fill(0, Config::NUM_COLORS + 1, 0);
+
+    foreach ($this->cards as $id) {
+      $color = Card::get($id)->color;
+      $res[$color]++;
+    }
+
+    return $res;
+  }
+
   function print(int $myId): void {
+    $cardQty = $this->getCardQuantities();
+
     Log::debug('======== Jucătorul %d (%s)', [ $myId, $this->name ]);
+    Log::debug('    Scor: %d', [ $this->getScore() ]);
+    $parts = [];
+    for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
+      if ($cardQty[$col] || $this->chips[$col]) {
+        $parts[] = Str::block($col, $cardQty[$col]) .
+          Str::chips($col, $this->chips[$col]);
+      }
+    }
+    Log::debug('    ' . implode(' ', $parts));
   }
 }
