@@ -32,6 +32,19 @@ class Board {
     Log::info('Am generat nobilii %s.', [ $str ]);
   }
 
+  // Adaugă jetoanele pe care cineva le-a plătit.
+  function gainChips(array $chips): void {
+    for ($i = 0; $i <= Config::NUM_COLORS; $i++) {
+      $this->chips[$i] += $chips[$i];
+    }
+  }
+
+  function removeCard($id): void {
+    foreach ($this->decks as $d) {
+      $d->removeCard($id);
+    }
+  }
+
   function asInputFile(): string {
     $l = [];
     $l[] = implode(' ', $this->chips);

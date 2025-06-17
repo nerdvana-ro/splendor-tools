@@ -15,6 +15,15 @@ class Deck {
     Log::info('Am generat pachetul [%s] [%s]', [ $str1, $str2 ]);
   }
 
+  function removeCard($id): void {
+    $pos = array_search($id, $this->faceUp);
+    if ($pos !== false) {
+      $this->faceUp[$pos] = count($this->faceDown)
+        ? array_shift($this->faceDown)
+        : 0;
+    }
+  }
+
   function print(): void {
     foreach ($this->faceUp as $id) {
       $card = Card::get($id);

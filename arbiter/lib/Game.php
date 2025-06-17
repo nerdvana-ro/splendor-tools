@@ -23,7 +23,7 @@ class Game {
   private function validateAction(array $action): void {
   }
 
-  private function takeTokens(array $colors, int $qty): void {
+  private function takeChips(array $colors, int $qty): void {
     $chipStr = [];
     foreach ($colors as $col) {
       $this->players[$this->curPlayer]->chips[$col] += $qty;
@@ -35,11 +35,21 @@ class Game {
     Log::info('I-am dat jucătorului %d %s.', [ $this->curPlayer, $chipStr]);
   }
 
+  private function buyCard(int $id): void {
+    $pl = $this->players[$this->curPlayer];
+    $chips = $pl->payForCard($id);
+    $this->board->gainChips($chips);
+    $this->board->removeCard($id);
+    $pl->gainCard($id);
+  }
+
   private function executeAction(array $action): void {
     $type = array_shift($action);
     switch ($type) {
-      case 1: $this->takeTokens(array_slice($action, 1), 1); break;
-      case 2: $this->takeTokens([ $action[0] ], 2); break;
+      case 1: $this->takeChips(array_slice($action, 1), 1); break;
+      case 2: $this->takeChips([ $action[0] ], 2); break;
+      case 3: /* TODO */ break;
+      case 4: $this->buyCard($action[0]); break;
     }
   }
 
@@ -54,7 +64,6 @@ class Game {
         Log::warn('Jucătorul %d zice pas din cauza excepției: %s',
                   [ $this->curPlayer, $e->getMessage() ]);
       }
-      print $state;
       $this->print();
       $this->curPlayer = ($this->curPlayer + 1) % $this->n;
     }
@@ -66,7 +75,7 @@ class Game {
         return true;
       }
     }
-    if ($this->roundNo >= 2) {
+    if ($this->roundNo >= 100) {
       return true;
     }
     return false;
