@@ -133,4 +133,4 @@ Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incore
 * Încercarea de a lua 2 jetoane de aceeași culoare dintr-un teanc insuficient de mare.
 * Încercarea de a rezerva a 4-a carte.
 * Încercarea de a cumpăra o carte inexistentă.
-* Încercarea de a cumpăra o carte pe care nu o clientul nu o poate plăti.
+* Încercarea de a cumpăra o carte pe care clientul nu o poate plăti.
