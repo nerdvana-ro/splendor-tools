@@ -17,7 +17,7 @@ class Game {
 
   // Returnează un ChipSet gol dacă nu poate colecționa nimic astfel încît să
   // poată cumpăra o carte la tura următoare.
-  ChipSet collectForSomeCard();
+  ChipSet saveForSomeCard();
 
   // Returnează jetoanele pe care trebuie să le ia jucătorul pentru a putea
   // cumpăra cartea. Presupune că jucătorul nu poate cumpăra deja cartea.
@@ -31,7 +31,7 @@ class Game {
   // negative pentru culorile care pot fi returnate, la nevoie.
   ChipSet computeTake(int cardId);
 
-  void collectRandomChips();
+  void takeRandomChips();
   void returnRandomChips();
 
   void buyAction(int card);

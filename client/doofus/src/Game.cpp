@@ -22,13 +22,13 @@ void Game::chooseAndMakeMove() {
     return;
   }
 
-  ChipSet take = collectForSomeCard();
+  ChipSet take = saveForSomeCard();
   if (!take.isZero()) {
     takeAction(take);
     return;
   }
 
-  collectRandomChips();
+  takeRandomChips();
 }
 
 int Game::getBuyableCardId() {
@@ -40,7 +40,7 @@ int Game::getBuyableCardId() {
   return 0;
 }
 
-ChipSet Game::collectForSomeCard() {
+ChipSet Game::saveForSomeCard() {
   ChipSet take;
   int i = 0;
 
@@ -70,7 +70,7 @@ ChipSet Game::computeTake(int cardId) {
   return take;
 }
 
-void Game::collectRandomChips() {
+void Game::takeRandomChips() {
   fprintf(stderr, "kibitz Trag jetoane la întîmplare.\n");
   std::vector<int> s = board.chips.getNonEmpty();
 

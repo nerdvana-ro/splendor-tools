@@ -20,7 +20,7 @@ int Util::rand(int lo, int hi) {
   return distrib(rng);
 }
 
-void Util::shuffle(std::vector<int> s) {
+void Util::shuffle(std::vector<int>& s) {
   std::ranges::shuffle(s, rng);
 }
 
