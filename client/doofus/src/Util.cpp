@@ -1,6 +1,8 @@
-#include "Util.h"
+#include <algorithm>
+#include <ranges>
 #include <stdio.h>
 #include <stdlib.h>
+#include "Util.h"
 
 std::random_device Util::rd;
 std::mt19937 Util::rng(rd());
@@ -18,11 +20,8 @@ int Util::rand(int lo, int hi) {
   return distrib(rng);
 }
 
-void Util::shuffle(int* v, int size) {
-  for (int i = 1; i < size; i++ ) {
-    int j = rand(0, i);
-    int tmp = v[i]; v[i] = v[j]; v[j] = tmp;
-  }
+void Util::shuffle(std::vector<int> s) {
+  std::ranges::shuffle(s, rng);
 }
 
 void Util::ignoreArrayFromStdin() {

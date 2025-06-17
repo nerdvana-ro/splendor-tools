@@ -12,7 +12,6 @@ public:
 
   void readFromStdin();
   bool canBuy(int cardId);
-  ChipSet computeTake(int cardId);
 };
 
 #endif

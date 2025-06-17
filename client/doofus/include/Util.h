@@ -11,7 +11,7 @@ class Util {
   static int min(int x, int y);
   static int max(int x, int y);
   static int rand(int lo, int hi);
-  static void shuffle(int* v, int size);
+  static void shuffle(std::vector<int> s);
   static void ignoreArrayFromStdin();
 };
 

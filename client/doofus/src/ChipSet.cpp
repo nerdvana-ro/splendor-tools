@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "ChipSet.h"
 #include "Util.h"
-#include <stdio.h>
 
 void ChipSet::fromArray(int* src) {
   for (int col = 0; col < NUM_COLORS; col++) {
@@ -14,6 +14,12 @@ int ChipSet::total() {
     sum += c[col];
   }
   return sum;
+}
+
+void ChipSet::clear() {
+  for (int col = 0; col < NUM_COLORS; col++) {
+    c[col] = 0;
+  }
 }
 
 bool ChipSet::isZero() {
@@ -40,6 +46,24 @@ int ChipSet::getMax() {
   return result;
 }
 
+int ChipSet::findColorWithCount(int cnt) {
+  int col = 0;
+  while ((col < NUM_COLORS) && (c[col] != cnt)) {
+    col++;
+  }
+  return col;
+}
+
+std::vector<int> ChipSet::getNonEmpty() {
+  std::vector<int> res;
+  for (int col = 0; col < NUM_COLORS; col++) {
+    if (c[col]) {
+      res.push_back(col);
+    }
+  }
+  return res;
+}
+
 void ChipSet::subtract(ChipSet& other) {
   for (int col = 0; col < NUM_COLORS; col++) {
     c[col] -= other.c[col];
@@ -52,7 +76,7 @@ void ChipSet::boundedSubtract(ChipSet& other) {
   }
 }
 
-bool ChipSet::isValid() {
+bool ChipSet::isSingleTake() {
   int cnt = countPositive(), max = getMax();
 
   return ((cnt <= 3) && (max <= 1)) ||

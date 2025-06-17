@@ -2,8 +2,8 @@
 #define __CONSTANTS_H__
 
 const int NUM_COLORS = 5;
-const int CARD_LEVELS = 3;
-const int NUM_FACE_UP_CARDS = 4;
+const int NUM_CARD_LEVELS = 3;
+const int NUM_FACE_UP_CARDS_PER_LEVEL = 4;
 const int HAND_LIMIT = 10;
 const int TAKE_TWO_LIMIT = 4;
 

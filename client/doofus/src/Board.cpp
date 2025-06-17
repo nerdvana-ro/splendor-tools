@@ -1,21 +1,27 @@
+#include <algorithm>
+#include <stdio.h>
 #include "Board.h"
 #include "Constants.h"
 #include "Util.h"
-#include <stdio.h>
 
 void Board::readFromStdin() {
-  int num_nobles, ignored;
+  int x, ignored;
 
   for (int col = 0; col <= NUM_COLORS; col++) {
     scanf("%d", &chips.c[col]);
   }
 
-  for (int l = 0; l < CARD_LEVELS; l++) {
-    scanf("%d", &ignored); // pack_<l>
-    for (int i = 0; i < NUM_FACE_UP_CARDS; i++) {
-      scanf("%d", &cards[l][i]);
+  cards.reserve(NUM_CARD_LEVELS * NUM_FACE_UP_CARDS_PER_LEVEL);
+  for (int l = 0; l < NUM_CARD_LEVELS; l++) {
+    scanf("%d", &ignored); // numărul de cărți cu fața în jos
+    for (int i = 0; i < NUM_FACE_UP_CARDS_PER_LEVEL; i++) {
+      scanf("%d", &x);
+      if (x) {
+        cards.push_back(x);
+      }
     }
   }
+  std::reverse(cards.begin(), cards.end());
 
   Util::ignoreArrayFromStdin(); // ignoră nobilii
 }

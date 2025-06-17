@@ -1,8 +1,9 @@
+#include <random>
+#include <stdio.h>
+#include <vector>
 #include "Card.h"
 #include "Game.h"
 #include "Util.h"
-#include <random>
-#include <stdio.h>
 
 void Game::readFromStdin() {
   int ignored, player_id;
@@ -15,33 +16,78 @@ void Game::readFromStdin() {
 }
 
 void Game::chooseAndMakeMove() {
-  if (!tryToBuyCard()) {
-    if (!tryToCollectForCard()) {
-      collectRandomChips();
+  int card = getBuyableCardId();
+  if (card) {
+    buyAction(card);
+    return;
+  }
+
+  ChipSet take = collectForSomeCard();
+  if (!take.isZero()) {
+    takeAction(take);
+    return;
+  }
+
+  collectRandomChips();
+}
+
+int Game::getBuyableCardId() {
+  for (int card: board.cards) {
+    if (player.canBuy(card)) {
+      return card;
     }
   }
+  return 0;
+}
+
+ChipSet Game::collectForSomeCard() {
+  ChipSet take;
+  int i = 0;
+
+  do {
+    take = computeTake(board.cards[i++]);
+  } while (take.isZero() && (i < board.cards.size() - 1));
+
+  return take;
+}
+
+ChipSet Game::computeTake(int cardId) {
+  Card card = Card::get(cardId);
+  ChipSet take(card.cost);
+  take.boundedSubtract(player.cards);
+  // Acum take reprezintă jetoanele necesare în mînă, peste bonusuri.
+  if (take.total() <= HAND_LIMIT) {
+    take.subtract(player.chips);
+
+    // Acum take reprezintă jetoanele de luat
+    if (!take.isSingleTake() || !board.offers(take)) {
+      take.clear();
+    }
+  } else {
+    take.clear();
+  }
+
+  return take;
 }
 
 void Game::collectRandomChips() {
-  fprintf(stderr, "kibitz Trag jetoane la întîmplare\n");
-  int stack[NUM_COLORS];
-  int numStacks = 0;
-  for (int col = 0; col < NUM_COLORS; col++) {
-    if (board.chips.c[col]) {
-      stack[numStacks++] = col;
-    }
-  }
+  fprintf(stderr, "kibitz Trag jetoane la întîmplare.\n");
+  std::vector<int> s = board.chips.getNonEmpty();
 
-  if ((numStacks == 1) && (board.chips.c[stack[0]] >= TAKE_TWO_LIMIT)) {
-    printf("2 %d", stack[0]);
-    player.chips.c[stack[0]] += 2;
+  bool worthTakingTwo =
+    (s.size() == 1) &&
+    (board.chips.c[s[0]] >= TAKE_TWO_LIMIT);
+
+  if (worthTakingTwo) {
+    printf("2 %d", s[0]);
+    player.chips.c[s[0]] += 2;
   } else {
-    int takeStacks = Util::min(numStacks, 3);
-    Util::shuffle(stack, numStacks);
-    printf("1 %d", takeStacks);
-    for (int i = 0; i < takeStacks; i++) {
-      printf(" %d", stack[i]);
-      player.chips.c[stack[i]]++;
+    int toTake = Util::min(s.size(), 3);
+    Util::shuffle(s);
+    printf("1 %d", toTake);
+    for (int i = 0; i < toTake; i++) {
+      printf(" %d", s[i]);
+      player.chips.c[s[i]]++;
     }
   }
 
@@ -61,37 +107,8 @@ void Game::returnRandomChips() {
   }
 }
 
-bool Game::tryToBuyCard() {
-  for (int l = CARD_LEVELS - 1; l >= 0; l--) {
-    for (int i = 0; i < NUM_FACE_UP_CARDS; i++) {
-      int card = board.cards[l][i];
-      if (card && player.canBuy(card)) {
-        printf("4 %d\n", card);
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool Game::tryToCollectForCard() {
-  for (int l = CARD_LEVELS - 1; l >= 0; l--) {
-    for (int i = 0; i < NUM_FACE_UP_CARDS; i++) {
-      if (canCollectForCard(board.cards[l][i])) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool Game::canCollectForCard(int cardId) {
-  ChipSet take = player.computeTake(cardId);
-  if (take.feasible && board.offers(take)) {
-    takeAction(take);
-    return true;
-  }
-  return false;
+void Game::buyAction(int card) {
+  printf("4 %d\n", card);
 }
 
 void Game::takeAction(ChipSet& take) {
@@ -100,25 +117,20 @@ void Game::takeAction(ChipSet& take) {
   bool takeTwo = (cnt == 1) && (max == 2);
 
   if (takeTwo) {
-    int col = 0;
-    while (take.c[col] != 2) {
-      col++;
-    }
+    int col = take.findColorWithCount(2);
     printf("2 %d", col);
     player.chips.c[col] += 2;
   } else {
     printf("1 %d", cnt);
     for (int col = 0; col < NUM_COLORS; col++) {
-      if (take.c[col]) {
+      if (take.c[col] > 0) {
         printf(" %d", col);
         player.chips.c[col]++;
       }
     }
   }
 
-  if (player.chips.total() > HAND_LIMIT) {
-    returnAction(take);
-  }
+  returnAction(take);
 
   printf("\n");
 }
@@ -127,7 +139,7 @@ void Game::returnAction(ChipSet& take) {
   int toReturn = player.chips.total() - HAND_LIMIT;
 
   for (int col = 0; col < NUM_COLORS; col++) {
-    while ((take.c[col] < 0) && toReturn) {
+    while ((take.c[col] < 0) && (toReturn > 0)) {
       printf(" %d", col);
       take.c[col]++;
       toReturn--;
