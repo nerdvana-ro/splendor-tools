@@ -13,15 +13,14 @@ int Util::max(int x, int y) {
   return (x > y) ? x : y;
 }
 
-int Util::rand() {
-  int x = rng();
-  return abs(x);
+int Util::rand(int lo, int hi) {
+  std::uniform_int_distribution<> distrib(lo, hi);
+  return distrib(rng);
 }
 
 void Util::shuffle(int* v, int size) {
   for (int i = 1; i < size; i++ ) {
-    std::uniform_int_distribution<> distrib(0, i);
-    int j = distrib(rng);
+    int j = rand(0, i);
     int tmp = v[i]; v[i] = v[j]; v[j] = tmp;
   }
 }

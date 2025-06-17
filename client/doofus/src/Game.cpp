@@ -51,11 +51,10 @@ void Game::collectRandomChips() {
 }
 
 void Game::returnRandomChips() {
-  std::mt19937 mt{};
   while (player.chips.total() > HAND_LIMIT) {
     int col;
     do {
-      col = mt() % NUM_COLORS;
+      col = Util::rand(0, NUM_COLORS - 1);
     } while (!player.chips.c[col]);
     printf(" %d", col);
     player.chips.c[col]--;
