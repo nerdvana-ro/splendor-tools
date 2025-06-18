@@ -21,6 +21,19 @@ class Interactor {
 
   // Returnează un array de tokeni citiți de la ieșirea clientului.
   static function interact(string $binary, string $input): array {
+    if ($binary == 'human') {
+      return self::interactHuman();
+    } else {
+      return self::interactClient($binary, $input);
+    }
+  }
+
+  static function interactHuman(): array {
+    $line = readline('Introdu o mutare: ');
+    return preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
+  }
+
+  static function interactClient(string $binary, string $input): array {
     $dir = dirname($binary);
     chdir($dir);
     file_put_contents(self::INPUT_FILE, $input);

@@ -29,7 +29,7 @@ class Args {
     $scriptName = $_SERVER['SCRIPT_FILENAME'];
     print "Apel: $scriptName -b <cale> -n <nume> [...]\n";
     print "\n";
-    print "    -b <cale>:  Fișierul binar executabil al unui client.\n";
+    print "    -b <cale>:  Fișierul binar executabil al unui client sau 'human' pentru jucător uman.\n";
     print "    -n <nume>:  Numele clientului.\n";
     print "    -s <seed>:  Seed-ul pentru RNG (0 sau lipsă pentru seed bazat pe timp)\n";
     print "\n";
