@@ -94,13 +94,19 @@ void Game::padTakeWithOnes(ChipSet& take) {
   Util::shuffle(cols);
 
   int cnt = take.countPositive();
+  // Împreună cu ce am planificat deja să iau, nu pot lua mai mult de 3 jetoane.
   int limit1 = 3 - cnt;
-  int limit2 = HAND_LIMIT - player.chips.total() - cnt;
-  int toTake = Util::min(Util::min(limit1, limit2), cols.size());
-  fprintf(stderr, "kibitz Completez cu %d jetoane la întîmplare.\n", toTake);
+  // Nu vreau să depășesc 10 jetoane în mînă dacă nu este necesar.
+  int limit2 = Util::max(HAND_LIMIT - player.chips.total() - cnt, 0);
+  // Nu pot lua mai multe jetoane decît numărul de culori disponibile.
+  int limit3 = cols.size();
+  int toTake = Util::min(Util::min(limit1, limit2), limit3);
 
-  for (int i = 0; i < toTake; i++) {
-    take.c[cols[i]] = 1;
+  if (toTake) {
+    fprintf(stderr, "kibitz Completez cu %d jetoane la întîmplare.\n", toTake);
+    for (int i = 0; i < toTake; i++) {
+      take.c[cols[i]] = 1;
+    }
   }
 }
 
