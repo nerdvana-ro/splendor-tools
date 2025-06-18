@@ -19,12 +19,12 @@ class Interactor {
     return preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
   }
 
-  // Returnează un array de tokeni citiți de la ieșirea clientului.
+  // Returnează un array de tokeni citiți de la ieșirea agentului.
   static function interact(string $binary, string $input): array {
     if ($binary == 'human') {
       return self::interactHuman();
     } else {
-      return self::interactClient($binary, $input);
+      return self::interactAgent($binary, $input);
     }
   }
 
@@ -33,7 +33,7 @@ class Interactor {
     return preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
   }
 
-  static function interactClient(string $binary, string $input): array {
+  static function interactAgent(string $binary, string $input): array {
     $dir = dirname($binary);
     chdir($dir);
     file_put_contents(self::INPUT_FILE, $input);
@@ -46,7 +46,7 @@ class Interactor {
     $resultCode = null;
     exec($cmd, $output, $resultCode);
     if ($resultCode !== 0) {
-      Log::warn('Clientul s-a terminat cu codul %d.', [ $resultCode ]);
+      Log::warn('Agentul s-a terminat cu codul %d.', [ $resultCode ]);
     }
 
     return self::readOutputFile();

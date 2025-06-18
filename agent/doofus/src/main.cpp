@@ -1,4 +1,4 @@
-// Un client rudimentar de Splendor.
+// Un agent rudimentar de Splendor.
 //
 // * Cumpără cartea de nivel maxim pe care o poate cumpăra.
 // * Altfel încearcă să strîngă jetoane pentru cartea de nivel maxim.

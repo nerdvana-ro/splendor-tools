@@ -1,18 +1,18 @@
 # Protocol de interacțiune
 
-## Invocarea clientului
+## Invocarea agentului
 
-Arbitrul va executa programul vostru, numit și **client**, de fiecare dată cînd este rîndul său la mutare.
+Arbitrul va executa programul vostru, numit și **agent**, de fiecare dată cînd este rîndul său la mutare.
 
-Arbitrul îi va trimite clientului, la intrarea standard, situația jocului conform specificațiilor de mai jos. Clientul trebuie să tipărească la ieșirea standard o acțiune, conform specificațiilor de mai jos.
+Arbitrul îi va trimite agentului, la intrarea standard, situația jocului conform specificațiilor de mai jos. Agentul trebuie să tipărească la ieșirea standard o acțiune, conform specificațiilor de mai jos.
 
-Clientul poate tipări orice mesaje la eroarea standard (`cerr` / `stderr`). Arbitrul le va ignora pe toate, cu excepția celor care încep cu prefixul `kibitz<spațiu>`. Pe acestea, arbitrul le va include în partida salvată. Puteți chibița orice doriți (sau nimic) despre numărul de poziții analizate, scoruri, motivul alegerii acțiunii pe care ați ales-o etc.
+Agentul poate tipări orice mesaje la eroarea standard (`cerr` / `stderr`). Arbitrul le va ignora pe toate, cu excepția celor care încep cu prefixul `kibitz<spațiu>`. Pe acestea, arbitrul le va include în partida salvată. Puteți chibița orice doriți (sau nimic) despre numărul de poziții analizate, scoruri, motivul alegerii acțiunii pe care ați ales-o etc.
 
-Clientul are la dispoziție 10 secunde per mutare și poate folosi oricîtă memorie în limita RAM-ului (laptopul meu are 16 GB).
+Agentul are la dispoziție 10 secunde per mutare și poate folosi oricîtă memorie în limita RAM-ului (laptopul meu are 16 GB).
 
-Dacă doriți, clientul poate stoca orice date în directorul curent, în limite rezonabile (cîțiva GB). Dacă doriți să-mi trimiteți în avans niște date precalculate, trimiteți-mi-le cumva.
+Dacă doriți, agentul poate stoca orice date în directorul curent, în limite rezonabile (cîțiva GB). Dacă doriți să-mi trimiteți în avans niște date precalculate, trimiteți-mi-le cumva.
 
-Dacă clientul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va alege automat mutarea „pas” (adică clientul nu va face nicio acțiune).
+Dacă agentul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va alege automat mutarea „pas” (adică agentul nu va face nicio acțiune).
 
 ## Datele de intrare
 
@@ -22,7 +22,7 @@ Datele de intrare au următorul format, fără linii goale și fără comentarii
 
 ```
 // Numărul de jucători, între 1 și 4.
-// Numărul de ordine al clientului vostru, între 0 și num_players - 1.
+// Numărul de ordine al agentului vostru, între 0 și num_players - 1.
 num_players your_id
 
 // Numărul rundei curente, indexată de la 0.
@@ -81,7 +81,7 @@ Această acțiune are formatul:
 1 num_chips color_1 color_2 ...
 ```
 
-Dacă doriți, puteți lua și doar două jetoane, unul singur sau chiar zero. În cazul rarisim cînd nu poate face nicio acțiune (nu există jetoane de luat și nu poate cumpăra / rezerva nicio carte), clientul trebuie să aleagă această acțiune și să ceară 0 jetoane.
+Dacă doriți, puteți lua și doar două jetoane, unul singur sau chiar zero. În cazul rarisim cînd nu poate face nicio acțiune (nu există jetoane de luat și nu poate cumpăra / rezerva nicio carte), agentul trebuie să aleagă această acțiune și să ceară 0 jetoane.
 
 ### Acțiunea „ia două jetoane de aceeași culoare”
 
@@ -105,7 +105,7 @@ Această acțiune are formatul:
 
 Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau poate fi `-1`, `-2` sau `-3` pentru a indica prima carte din pachetul de nivel 1, 2, respectiv 3.
 
-Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (clientul vostru trebuie să țină evidența ca să știe dacă l-a primit sau nu).
+Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (agentul vostru trebuie să țină evidența ca să știe dacă l-a primit sau nu).
 
 ### Acțiunea „cumpără o carte”
 
@@ -115,9 +115,9 @@ Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (clientu
 4 card_id
 ```
 
-Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau la una dintre cărțile din rezerva clientului.
+Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau la una dintre cărțile din rezerva agentului.
 
-Arbitrul va deduce automat costurile cărții din mîna clientului. Arbitrul va folosi în ordine, pentru fiecare dintre cele 5 culori:
+Arbitrul va deduce automat costurile cărții din mîna agentului. Arbitrul va folosi în ordine, pentru fiecare dintre cele 5 culori:
 
 1. cărți-bonus;
 2. dacă încă este nevoie, jetoane de acea culoare;
@@ -125,7 +125,7 @@ Arbitrul va deduce automat costurile cărții din mîna clientului. Arbitrul va 
 
 ### Returnarea jetoanelor
 
-Acțiunile 1-3 îi aduc clientului jetoane suplimentare. Dacă clientul ajunge astfel la `j > 10` jetoane în mînă, continuați linia cu o listă de `j - 10` culori pentru jetoanele de returnat. Arbitrul ține și el evidența bunurilor și știe cîte jetoane așteaptă din partea clientului.
+Acțiunile 1-3 îi aduc agentului jetoane suplimentare. Dacă agentul ajunge astfel la `j > 10` jetoane în mînă, continuați linia cu o listă de `j - 10` culori pentru jetoanele de returnat. Arbitrul ține și el evidența bunurilor și știe cîte jetoane așteaptă din partea agentului.
 
 ### Acțiuni incorecte
 
@@ -135,4 +135,4 @@ Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incore
 * Încercarea de a lua 2 jetoane de aceeași culoare dintr-un teanc insuficient de mare.
 * Încercarea de a rezerva a 4-a carte.
 * Încercarea de a cumpăra o carte inexistentă.
-* Încercarea de a cumpăra o carte pe care clientul nu o poate plăti.
+* Încercarea de a cumpăra o carte pe care agentul nu o poate plăti.
