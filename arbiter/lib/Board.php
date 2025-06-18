@@ -77,7 +77,7 @@ class Board {
       $str = '';
       for ($col = 0; $col < Config::NUM_COLORS; $col++) {
         if ($noble->cost[$col]) {
-          $str .= Str::chips($col, $noble->cost[$col]);
+          $str .= Str::block($col, $noble->cost[$col]);
           $str .= ' ';
         }
       }

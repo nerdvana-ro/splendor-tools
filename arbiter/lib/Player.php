@@ -92,8 +92,9 @@ class Player {
 
   function requestAction(string $gameState): array {
     Log::info('Aștept o acțiune de la %s', [ $this->name ]);
-    $tokens = Interactor::interact($this->binary, $gameState);
-    return $tokens;
+    $inter = new Interactor($this->binary, $gameState);
+    $inter->run();
+    return $inter->getOutput();
   }
 
   // $reveal: Arătăm sau nu cărțile ascunse?

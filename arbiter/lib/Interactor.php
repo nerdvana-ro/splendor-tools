@@ -5,43 +5,56 @@ class Interactor {
   const string OUTPUT_FILE = '/tmp/output.txt';
   const int TIMEOUT = 10; // secunde
 
-  // Citește fișierul de ieșire și îl sparge în tokeni.
-  static function readOutputFile(): array {
+  private string $binary;
+  private string $input;
+
+  private array $output; // Ieșirea tokenizată în cuvinte.
+  private array $error; // Liniile chibițate, fără prefixul „kibitz ”.
+
+  function __construct(string $binary, string $input) {
+    $this->binary = $binary;
+    $this->input = $input;
+  }
+
+  function getOutput(): array {
+    return $this->output;
+  }
+
+  function parseAgentOutput(): void {
     $contents = @file_get_contents(self::OUTPUT_FILE);
 
     if ($contents === false) {
       Log::warn('Fișierul %s nu există.', [ self::OUTPUT_FILE ]);
-      return [];
+      return;
     }
 
     $contents = trim($contents);
     Log::info('Programul a tipărit [%s].', [ $contents ]);
-    return preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
+    $this->output = preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
   }
 
-  // Returnează un array de tokeni citiți de la ieșirea agentului.
-  static function interact(string $binary, string $input): array {
-    if ($binary == 'human') {
-      return self::interactHuman();
+  function run(): void {
+    if ($this->binary == 'human') {
+      self::interactHuman();
     } else {
-      return self::interactAgent($binary, $input);
+      self::interactAgent();
     }
   }
 
-  static function interactHuman(): array {
+  private function interactHuman(): void {
     $line = readline('Introdu o mutare: ');
-    return preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
+    $this->output = preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
   }
 
-  static function interactAgent(string $binary, string $input): array {
-    $dir = dirname($binary);
+  private function interactAgent(): void {
+    $dir = dirname($this->binary);
     chdir($dir);
-    file_put_contents(self::INPUT_FILE, $input);
+    file_put_contents(self::INPUT_FILE, $this->input);
     @unlink(self::OUTPUT_FILE);
 
-    Log::debug('Apelez %s în directorul %s.', [ $binary, $dir ]);
+    Log::debug('Apelez %s în directorul %s.', [ $this->binary, $dir ]);
     $cmd = sprintf('ulimit -t %d && %s < %s > %s',
-                   self::TIMEOUT, $binary, self::INPUT_FILE, self::OUTPUT_FILE);
+                   self::TIMEOUT, $this->binary, self::INPUT_FILE, self::OUTPUT_FILE);
     $output = null;
     $resultCode = null;
     exec($cmd, $output, $resultCode);
@@ -49,6 +62,6 @@ class Interactor {
       Log::warn('Agentul s-a terminat cu codul %d.', [ $resultCode ]);
     }
 
-    return self::readOutputFile();
+    self::parseAgentOutput();
   }
 }
