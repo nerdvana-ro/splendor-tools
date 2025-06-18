@@ -30,8 +30,96 @@ class Game {
     srand($seed);
   }
 
+  private function shiftAndCheck(array &$v, int $lo, int $hi): int {
+    if (empty($v)) {
+      throw new SplendorException('Acțiunea este prea scurtă.');
+    }
+
+    $first = array_shift($v);
+    if (filter_var($first, FILTER_VALIDATE_INT) === false) {
+      throw new SplendorException("Cuvîntul [$first] nu este un întreg.");
+    }
+
+    if (($first < $lo) || ($first > $hi)) {
+      throw new SplendorException("Valoarea $first nu este cuprinsă între $lo și $hi.");
+    }
+
+    return $first;
+  }
+
+  private function validateTakeThree(array &$action): void {
+    $cnt = $this->shiftAndCheck($action, 0, 3);
+    $taken = [];
+    while ($cnt--) {
+      $color = $this->shiftAndCheck($action, 0, Config::NUM_COLORS - 1);
+      if (isset($taken[$color])) {
+        throw new SplendorException("Ai cerut două jetoane de culoarea {$color}.");
+      }
+      $taken[$color] = true;
+      if (!$this->board->chips[$color]) {
+        throw new SplendorException("Pe masă nu există jetoane de culoarea {$color}.");
+      }
+    }
+  }
+
+  private function validateTakeTwo(array &$action): void {
+    $color = $this->shiftAndCheck($action, 0, Config::NUM_COLORS - 1);
+    $avail = $this->board->chips[$color];
+    if ($avail < Config::TAKE_TWO_LIMIT) {
+      throw new SplendorException("Există doar {$avail} jetoane de culoarea {$color}.");
+    }
+  }
+
+  private function validateReserve(array &$action): void {
+    $id = $this->shiftAndCheck($action, -3, Config::NUM_CARDS);
+
+    $numRes = count($this->players[$this->curPlayer]->reserve);
+    if ($numRes == Config::MAX_RESERVED_CARDS) {
+      throw new SplendorException("Ai deja {$numRes} cărți rezervate.");
+    }
+
+    if ($id == 0) {
+      throw new SplendorException('ID-ul 0 este ilegal.');
+    } else if ($id < 0) {
+      $level = -$id;
+      if (empty($this->board->decks[$level - 1]->faceDown)) {
+        throw new SplendorException("Pachetul de nivel {$level} este gol.");
+      }
+    } else {
+      if (!$this->board->isFaceUp($id)) {
+        throw new SplendorException("Cartea #{$id} nu este pe masă.");
+      }
+    }
+  }
+
+  private function validateBuy(array &$action): void {
+    $id = $this->shiftAndCheck($action, 1, Config::NUM_CARDS);
+    $pl = $this->players[$this->curPlayer];
+    $isReserved = $pl->hasInReserve($id);
+    $isFaceUp = $this->board->isFaceUp($id);
+
+    if (!$isReserved && !$isFaceUp) {
+      throw new SplendorException("Cartea #{$id} nu este nici pe masă nici rezervată.");
+    }
+
+    if (!$pl->canBuyCard($id)) {
+      throw new SplendorException("Nu îți permiți cartea #{$id}.");
+    }
+  }
+
   // Ridică SplendorException pentru mutări invalide.
   private function validateAction(array $action): void {
+    $type = $this->shiftAndCheck($action, 1, 4);
+    switch ($type) {
+      case 1: $this->validateTakeThree($action); break;
+      case 2: $this->validateTakeTwo($action); break;
+      case 3: $this->validateReserve($action); break;
+      case 4: $this->validateBuy($action); break;
+    }
+
+    if (count($action)) {
+      throw new SplendorException("Cuvîntul {$action[0]} este în plus.");
+    }
   }
 
   private function takeChips(array $colors, int $qty): void {
@@ -44,6 +132,26 @@ class Game {
 
     $chipStr = implode(' ', $chipStr);
     Log::info('I-am dat jucătorului %d %s.', [ $this->curPlayer, $chipStr]);
+  }
+
+  private function reserveCard(int $id): void {
+    $pl = $this->players[$this->curPlayer];
+
+    if ($id < 0) {
+      $id = $this->board->drawCard(-$id);
+      $hidden = true;
+    } else {
+      $this->board->removeCard($id);
+      $hidden = false;
+    }
+
+    $pl->gainReserve($id, $hidden);
+
+    $gold = Config::NUM_COLORS;
+    if ($this->board->chips[$gold]) {
+      $this->board->chips[$gold]--;
+      $pl->chips[$gold]++;
+    }
   }
 
   private function buyCard(int $id): void {
@@ -59,7 +167,7 @@ class Game {
     switch ($type) {
       case 1: $this->takeChips(array_slice($action, 1), 1); break;
       case 2: $this->takeChips([ $action[0] ], 2); break;
-      case 3: /* TODO */ break;
+      case 3: $this->reserveCard($action[0]); break;
       case 4: $this->buyCard($action[0]); break;
     }
   }
@@ -72,7 +180,7 @@ class Game {
         $this->validateAction($action);
         $this->executeAction($action);
       } catch (SplendorException $e) {
-        Log::warn('Jucătorul %d zice pas din cauza excepției: %s',
+        Log::warn('Jucătorul %d zice pas din cauza erorii: %s',
                   [ $this->curPlayer, $e->getMessage() ]);
       }
       $this->print();
@@ -93,6 +201,7 @@ class Game {
   }
 
   function run(): void {
+    $this->print();
     do {
       $this->playRound();
       $this->roundNo++;

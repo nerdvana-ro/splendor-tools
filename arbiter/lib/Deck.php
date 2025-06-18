@@ -15,11 +15,19 @@ class Deck {
     Log::info('Am generat pachetul [%s] [%s]', [ $str1, $str2 ]);
   }
 
-  function removeCard($id): void {
+  function drawCard(): int {
+    return array_shift($this->faceDown);
+  }
+
+  function isFaceUp(int $id): bool {
+    return in_array($id, $this->faceUp);
+  }
+
+  function removeCard(int $id): void {
     $pos = array_search($id, $this->faceUp);
     if ($pos !== false) {
       $this->faceUp[$pos] = count($this->faceDown)
-        ? array_shift($this->faceDown)
+        ? $this->drawCard()
         : 0;
     }
   }
@@ -28,16 +36,7 @@ class Deck {
     foreach ($this->faceUp as $id) {
       if ($id) {
         $card = Card::get($id);
-        $str = sprintf('    [#%02d]    %d      ', $id, $card->points);
-        $str .= Str::block($card->color, 1);
-        $str .= '     ';
-        for ($col = 0; $col < Config::NUM_COLORS; $col++) {
-          if ($card->cost[$col]) {
-            $str .= Str::chips($col, $card->cost[$col]);
-            $str .= ' ';
-          }
-        }
-        Log::debug($str);
+        $card->print();
       }
     }
     Log::debug('    în pachet: %d', [ count($this->faceDown) ]);

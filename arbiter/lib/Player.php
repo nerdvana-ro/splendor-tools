@@ -17,7 +17,7 @@ class Player {
 
     $this->chips = array_fill(0, Config::NUM_COLORS + 1, 0); // inclusiv 0 aur
     $this->cards = [];
-    $this->cardColors = array_fill(0, Config::NUM_COLORS, 0);
+    $this->cardColors = array_fill(0, Config::NUM_COLORS + 1, 0);
     $this->reserve = [];
     $this->nobles = [];
   }
@@ -30,6 +30,29 @@ class Player {
     return $score;
   }
 
+  function hasInReserve(int $cardId): bool {
+    foreach ($this->reserve as $rc) {
+      if ($rc->id == $cardId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function gainReserve(int $cardId, bool $hidden): void {
+    $this->reserve[] = new ReservedCard($cardId, $hidden);
+  }
+
+  // $cardId nu este neapărat în rezervă. Dacă este, șterge-l.
+  function loseReserve(int $cardId): void {
+    foreach ($this->reserve as $i => $rc) {
+      if ($rc->id == $cardId) {
+        array_splice($this->reserve, $i, 1);
+        return;
+      }
+    }
+  }
+
   function payForCard(int $id): array {
     $card = Card::get($id);
     $chips = array_fill(0, Config::NUM_COLORS + 1, 0);
@@ -38,8 +61,8 @@ class Player {
       $cost = max($card->cost[$i] - $this->cardColors[$i], 0);
       $actual = min($cost, $this->chips[$i]);
       $jokers = $cost - $actual;
-      $this->chips[$i] -= $cost;
-      $chips[$i] += $cost;
+      $this->chips[$i] -= $actual;
+      $chips[$i] += $actual;
       $this->chips[Config::NUM_COLORS] -= $jokers;
       $chips[Config::NUM_COLORS] += $jokers;
     }
@@ -47,13 +70,24 @@ class Player {
     return $chips;
   }
 
+  function canBuyCard(int $id): bool {
+    $card = Card::get($id);
+    $goldNeeded = 0;
+    for ($i = 0; $i < Config::NUM_COLORS; $i++) {
+      $cost = $card->cost[$i];
+      $have = $this->cardColors[$i] + $this->chips[$i];
+      if ($cost > $have) {
+        $goldNeeded += $cost - $have;
+      }
+    }
+    return ($this->chips[Config::NUM_COLORS] >= $goldNeeded);
+  }
+
   function gainCard(int $id) {
     $card = Card::get($id);
     $this->cards[] = $id;
     $this->cardColors[$card->color]++;
-
-    // Dacă provenea din rezervă, șterge-o.
-    $this->reserve = array_diff($this->reserve, [ $id ]);
+    $this->loseReserve($id);
   }
 
   function requestAction(string $gameState): array {
@@ -76,37 +110,31 @@ class Player {
     $arr = [];
     foreach ($this->reserve as $r) {
       if ($reveal || !$r->hidden) {
-        $arr[] = $id;
+        $arr[] = $r->id;
       } else {
-        $arr[] = -Card::get($id)->level;
+        $arr[] = -Card::get($r->id)->level;
       }
     }
     return trim(count($arr) . ' ' . implode(' ', $arr));
   }
 
-  function getCardQuantities(): array {
-    $res = array_fill(0, Config::NUM_COLORS + 1, 0);
-
-    foreach ($this->cards as $id) {
-      $color = Card::get($id)->color;
-      $res[$color]++;
-    }
-
-    return $res;
-  }
-
   function print(int $myId): void {
-    $cardQty = $this->getCardQuantities();
-
     Log::debug('======== Jucătorul %d (%s)', [ $myId, $this->name ]);
     Log::debug('    Scor: %d', [ $this->getScore() ]);
     $parts = [];
     for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
-      if ($cardQty[$col] || $this->chips[$col]) {
-        $parts[] = Str::block($col, $cardQty[$col]) .
+      if ($this->cardColors[$col] || $this->chips[$col]) {
+        $parts[] = Str::block($col, $this->cardColors[$col]) .
           Str::chips($col, $this->chips[$col]);
       }
     }
-    Log::debug('    ' . implode(' ', $parts));
+    Log::debug('    Cărți și jetoane: ' . implode(' ', $parts));
+    if (count($this->reserve)) {
+      Log::debug('    Rezervă:');
+      foreach ($this->reserve as $rc) {
+        $card = Card::get($rc->id);
+        $card->print();
+      }
+    }
   }
 }

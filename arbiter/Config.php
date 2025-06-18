@@ -18,8 +18,10 @@ class Config {
   const MAX_PLAYERS = 4;
   const NUM_COLORS = 5;
   const NUM_GOLD = 5;
+  const TAKE_TWO_LIMIT = 4;
   const NUM_NOBLES = 10;
   const NOBLE_POINTS = 3;
+  const NUM_CARDS = 90;
   const CARD_LEVELS = 3;
   const CARD_LEVEL_RANGES = [
     [], // nivelurile sînt indexate de la 1
@@ -28,6 +30,7 @@ class Config {
     [ 71, 90 ],
   ];
   const NUM_FACE_UP_CARDS = 4;
+  const MAX_RESERVED_CARDS = 3;
   const ENDGAME_SCORE = 15;
 
   // Limite în funcție de numărul de jucători.

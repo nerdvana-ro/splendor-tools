@@ -32,6 +32,16 @@ class Board {
     Log::info('Am generat nobilii %s.', [ $str ]);
   }
 
+  function isFaceUp(int $cardId): bool {
+    $level = Card::get($cardId)->level;
+    return $this->decks[$level - 1]->isFaceUp($cardId);
+  }
+
+  //  Nivelul este 1-based.
+  function drawCard(int $level): int {
+    return $this->decks[$level - 1]->drawCard();
+  }
+
   // Adaugă jetoanele pe care cineva le-a plătit.
   function gainChips(array $chips): void {
     for ($i = 0; $i <= Config::NUM_COLORS; $i++) {
@@ -40,9 +50,8 @@ class Board {
   }
 
   function removeCard($id): void {
-    foreach ($this->decks as $d) {
-      $d->removeCard($id);
-    }
+    $level = Card::get($id)->level;
+    $this->decks[$level - 1]->removeCard($id);
   }
 
   function asInputFile(): string {
