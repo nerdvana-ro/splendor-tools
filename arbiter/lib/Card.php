@@ -43,6 +43,6 @@ class Card {
         $str .= ' ';
       }
     }
-    Log::debug($str);
+    Log::info($str);
   }
 }

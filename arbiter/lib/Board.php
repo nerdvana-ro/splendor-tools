@@ -71,7 +71,7 @@ class Board {
   }
 
   function printNobles(): void {
-    Log::debug("======== Nobili:");
+    Log::info("======== Nobili:");
     foreach ($this->nobles as $id) {
       $noble = Noble::get($id);
       $str = '';
@@ -81,23 +81,23 @@ class Board {
           $str .= ' ';
         }
       }
-      Log::debug("    [#%2d] %s", [ $id, $str ]);
+      Log::info("    [#%2d] %s", [ $id, $str ]);
     }
   }
 
   function printCards(): void {
-    Log::debug('======== Cărți:');
-    Log::debug('      ID  puncte culoare  cost');
+    Log::info('======== Cărți:');
+    Log::info('      ID  puncte culoare  cost');
     for ($level = Config::CARD_LEVELS - 1; $level >= 0; $level--) {
       $this->decks[$level]->print();
       if ($level) {
-        Log::debug('    ' . str_repeat('-', 40));
+        Log::info('    ' . str_repeat('-', 40));
       }
     }
   }
 
   function printChips(): void {
-    Log::debug("======== Jetoane:");
+    Log::info("======== Jetoane:");
     $str = '    ';
     for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
       if ($this->chips[$col]) {
@@ -105,7 +105,7 @@ class Board {
         $str .= ' ';
       }
     }
-    Log::debug($str);
+    Log::info($str);
   }
 
 }

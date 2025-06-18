@@ -119,8 +119,8 @@ class Player {
   }
 
   function print(int $myId): void {
-    Log::debug('======== Jucătorul %d (%s)', [ $myId, $this->name ]);
-    Log::debug('    Scor: %d', [ $this->getScore() ]);
+    Log::info('======== Jucătorul %d (%s)', [ $myId, $this->name ]);
+    Log::info('    Scor: %d', [ $this->getScore() ]);
     $parts = [];
     for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
       if ($this->cardColors[$col] || $this->chips[$col]) {
@@ -128,9 +128,9 @@ class Player {
           Str::chips($col, $this->chips[$col]);
       }
     }
-    Log::debug('    Cărți și jetoane: ' . implode(' ', $parts));
+    Log::info('    Cărți și jetoane: ' . implode(' ', $parts));
     if (count($this->reserve)) {
-      Log::debug('    Rezervă:');
+      Log::info('    Rezervă:');
       foreach ($this->reserve as $rc) {
         $card = Card::get($rc->id);
         $card->print();

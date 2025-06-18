@@ -221,8 +221,8 @@ class Game {
 
   function print(): void {
     $pname = $this->players[$this->curPlayer]->name;
-    Log::debug('================ Runda %d, jucător %d (%s)',
-               [ $this->roundNo, $this->curPlayer, $pname]);
+    Log::info('================ Runda %d, jucător %d (%s)',
+              [ $this->roundNo, $this->curPlayer, $pname]);
     $this->board->print();
     foreach ($this->players as $id => $player) {
       $player->print($id);

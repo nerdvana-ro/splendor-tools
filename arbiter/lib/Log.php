@@ -30,7 +30,7 @@ class Log {
   }
 
   static function debug(string $msg, array $args = [], $indent = 0): void {
-    self::write(self::DEBUG, AnsiColors::DEFAULT, $msg, $args, $indent);
+    self::write(self::DEBUG, AnsiColors::DEBUG, $msg, $args, $indent);
   }
 
   private static function write(

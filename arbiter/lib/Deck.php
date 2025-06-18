@@ -39,7 +39,7 @@ class Deck {
         $card->print();
       }
     }
-    Log::debug('    în pachet: %d', [ count($this->faceDown) ]);
+    Log::info('    în pachet: %d', [ count($this->faceDown) ]);
   }
 
   function asInputFile(): string {
