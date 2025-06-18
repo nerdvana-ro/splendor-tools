@@ -9,11 +9,12 @@ void Player::readFromStdin() {
     cards.c[col] = 0;
   }
 
-  int num_cards, color;
+  int num_cards, id;
   scanf("%d", &num_cards);
   while (num_cards--) {
-    scanf("%d", &color);
-    cards.c[color++];
+    scanf("%d", &id);
+    int color = Card::get(id).color;
+    cards.c[color]++;
   }
 
   Util::ignoreArrayFromStdin(); // ignoră cărțile rezervate
