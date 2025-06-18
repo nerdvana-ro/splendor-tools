@@ -8,6 +8,8 @@ class Game {
   public array $players;
 
   function __construct(Args $args) {
+    $this->initRng($args->getSeed());
+
     $this->n = $args->getNumPlayers();
     for ($i = 0; $i < $this->n; $i++) {
       list($binary, $name) = $args->getPlayer($i);
@@ -17,6 +19,15 @@ class Game {
     $this->board = new Board($this->n);
     $this->curPlayer = 0;
     $this->roundNo = 0;
+  }
+
+  private function initRng(int $seed): void {
+    if (!$seed) {
+      $micros = microtime(true);
+      $seed = $micros * 1_000_000 % 1_000_000_000;
+    }
+    Log::info('Inițializez RNG cu seed-ul %d.', [ $seed ]);
+    srand($seed);
   }
 
   // Ridică SplendorException pentru mutări invalide.

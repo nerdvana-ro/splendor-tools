@@ -3,6 +3,7 @@
 class Args {
   private array $binaries;
   private array $names;
+  private int $seed;
 
   // PHP's getopt() will return a string if an argument appears once, but an
   // array if the argument appears multiple times. Convert the first situation
@@ -12,7 +13,7 @@ class Args {
   }
 
   function parse(): void {
-    $opts = getopt('b:n:');
+    $opts = getopt('b:n:s:');
     if (empty($opts)) {
       $this->usage();
       exit(1);
@@ -20,6 +21,7 @@ class Args {
 
     $this->binaries = $this->asArray($opts['b'] ?? []);
     $this->names = $this->asArray($opts['n'] ?? []);
+    $this->seed = $opts['s'] ?? 0;
     $this->validate();
   }
 
@@ -29,6 +31,7 @@ class Args {
     print "\n";
     print "    -b <cale>:  Fișierul binar executabil al unui client.\n";
     print "    -n <nume>:  Numele clientului.\n";
+    print "    -s <seed>:  Seed-ul pentru RNG (0 sau lipsă pentru seed bazat pe timp)\n";
     print "\n";
     print "Opțiunile -b și -n pot fi repetate pentru fiecare client.\n";
   }
@@ -52,5 +55,9 @@ class Args {
 
   function getPlayer(int $i): array {
     return [ $this->binaries[$i], $this->names[$i] ];
+  }
+
+  function getSeed(): int {
+    return $this->seed;
   }
 }
