@@ -69,7 +69,7 @@ num_nobles nob_1 nob_2 ...
 
 ## Datele de ieșire
 
-Programul vostru trebuie să tipărească exact o linie cu acțiunea efectuată, urmată eventual de cîmpuri suplimentare care descriu jetoanele returnate.
+Programul vostru trebuie să tipărească acțiunea dorită. Orice acțiune este descrisă prin valori întregi și, eventual, este urmată de cîmpuri suplimentare care descriu jetoanele returnate. Valorile întregi pot fi despărțite prin oricîte spații sau linii noi, pe care arbitrul le ignoră.
 
 ### Acțiunea „ia jetoane de culori diferite”
 
@@ -102,6 +102,8 @@ Această acțiune are formatul:
 // ID-ul cărții rezervate
 3 card_id
 ```
+
+Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau poate fi `-1`, `-2` sau `-3` pentru a indica prima carte din pachetul de nivel 1, 2, respectiv 3.
 
 Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (clientul vostru trebuie să țină evidența ca să știe dacă l-a primit sau nu).
 
