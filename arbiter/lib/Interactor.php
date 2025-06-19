@@ -3,21 +3,27 @@
 class Interactor {
   const string INPUT_FILE = '/tmp/input.txt';
   const string OUTPUT_FILE = '/tmp/output.txt';
+  const string ERROR_FILE = '/tmp/error.txt';
   const int TIMEOUT = 10; // secunde
 
   private string $binary;
   private string $input;
 
-  private array $output; // Ieșirea tokenizată în cuvinte.
-  private array $error; // Liniile chibițate, fără prefixul „kibitz ”.
+  private array $output;   // Ieșirea tokenizată în cuvinte.
+  private array $kibitzes; // Liniile chibițate, fără prefixul „kibitz ”.
 
   function __construct(string $binary, string $input) {
     $this->binary = $binary;
     $this->input = $input;
+    $this->kibitzes = [];
   }
 
   function getOutput(): array {
     return $this->output;
+  }
+
+  function getKibitzes(): array {
+    return $this->kibitzes;
   }
 
   function parseAgentOutput(): void {
@@ -31,6 +37,22 @@ class Interactor {
     $contents = trim($contents);
     Log::info('Programul a tipărit [%s].', [ $contents ]);
     $this->output = preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
+  }
+
+  function parseAgentError(): void {
+    if (!file_exists(self::ERROR_FILE)) {
+      return;
+    }
+    Log::debug("Programul a tipărit la stderr:\n%s",
+               [ file_get_contents(self::ERROR_FILE) ]);
+    $lines = file(self::ERROR_FILE);
+
+    foreach ($lines as $line) {
+      if (Str::startsWith($line, Config::KIBITZ_PREFIX)) {
+        $suf = substr($line, strlen(Config::KIBITZ_PREFIX));
+        $this->kibitzes[] = trim($suf);
+      }
+    }
   }
 
   function run(): void {
@@ -51,10 +73,15 @@ class Interactor {
     chdir($dir);
     file_put_contents(self::INPUT_FILE, $this->input);
     @unlink(self::OUTPUT_FILE);
+    @unlink(self::ERROR_FILE);
 
     Log::debug('Apelez %s în directorul %s.', [ $this->binary, $dir ]);
-    $cmd = sprintf('ulimit -t %d && %s < %s > %s',
-                   self::TIMEOUT, $this->binary, self::INPUT_FILE, self::OUTPUT_FILE);
+    $cmd = sprintf('ulimit -t %d && %s < %s > %s 2> %s',
+                   self::TIMEOUT,
+                   $this->binary,
+                   self::INPUT_FILE,
+                   self::OUTPUT_FILE,
+                   self::ERROR_FILE);
     $output = null;
     $resultCode = null;
     exec($cmd, $output, $resultCode);
@@ -63,5 +90,6 @@ class Interactor {
     }
 
     self::parseAgentOutput();
+    self::parseAgentError();
   }
 }

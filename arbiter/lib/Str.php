@@ -2,6 +2,11 @@
 
 class Str {
 
+  static function startsWith($string, $prefix): bool {
+    $start = substr($string, 0, strlen($prefix));
+    return $start == $prefix;
+  }
+
   static function loadCsv(string $fileName, int $linesToIgnore): array {
     $result = [];
     $lines = file($fileName);

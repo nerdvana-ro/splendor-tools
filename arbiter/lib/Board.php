@@ -81,7 +81,7 @@ class Board {
           $str .= ' ';
         }
       }
-      Log::info("    [#%2d] %s", [ $id, $str ]);
+      Log::info("    [#%02d] %s", [ $id, $str ]);
     }
   }
 

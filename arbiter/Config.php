@@ -12,6 +12,8 @@ class Config {
   const CHIP_CHAR = '◉';
   const BLOCK_CHAR = '🂠';
 
+  const KIBITZ_PREFIX = 'kibitz ';
+
   /**
    * Constante specifice jocului Splendor.
    **/
