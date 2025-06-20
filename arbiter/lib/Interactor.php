@@ -9,7 +9,7 @@ class Interactor {
   private string $binary;
   private string $input;
 
-  private array $output;   // Ieșirea tokenizată în cuvinte.
+  private array $tokens;   // Ieșirea tokenizată în cuvinte.
   private array $kibitzes; // Liniile chibițate, fără prefixul „kibitz ”.
 
   function __construct(string $binary, string $input) {
@@ -18,8 +18,8 @@ class Interactor {
     $this->kibitzes = [];
   }
 
-  function getOutput(): array {
-    return $this->output;
+  function getOutput(): Output {
+    return new Output($this->tokens, $this->kibitzes);
   }
 
   function getKibitzes(): array {
@@ -36,17 +36,20 @@ class Interactor {
 
     $contents = trim($contents);
     Log::info('Programul a tipărit [%s].', [ $contents ]);
-    $this->output = preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
+    $this->tokens = preg_split('/\s+/', $contents, -1, PREG_SPLIT_NO_EMPTY);
   }
 
   function parseAgentError(): void {
     if (!file_exists(self::ERROR_FILE)) {
       return;
     }
-    Log::debug("Programul a tipărit la stderr:\n%s",
-               [ file_get_contents(self::ERROR_FILE) ]);
-    $lines = file(self::ERROR_FILE);
 
+    $contents = file_get_contents(self::ERROR_FILE);
+    if ($contents) {
+      Log::debug("Programul a tipărit la stderr:\n{$contents}");
+    }
+
+    $lines = file(self::ERROR_FILE);
     foreach ($lines as $line) {
       if (Str::startsWith($line, Config::KIBITZ_PREFIX)) {
         $suf = substr($line, strlen(Config::KIBITZ_PREFIX));
@@ -65,7 +68,7 @@ class Interactor {
 
   private function interactHuman(): void {
     $line = readline('Introdu o mutare: ');
-    $this->output = preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
+    $this->tokens = preg_split('/\s+/', $line, -1, PREG_SPLIT_NO_EMPTY);
   }
 
   private function interactAgent(): void {
@@ -82,9 +85,9 @@ class Interactor {
                    self::INPUT_FILE,
                    self::OUTPUT_FILE,
                    self::ERROR_FILE);
-    $output = null;
+    $ignoredOutput = null;
     $resultCode = null;
-    exec($cmd, $output, $resultCode);
+    exec($cmd, $ignoredOutput, $resultCode);
     if ($resultCode !== 0) {
       Log::warn('Agentul s-a terminat cu codul %d.', [ $resultCode ]);
     }

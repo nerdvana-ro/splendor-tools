@@ -90,7 +90,7 @@ class Player {
     $this->loseReserve($id);
   }
 
-  function requestAction(string $gameState): array {
+  function requestAction(string $gameState): Output {
     Log::info('Aștept o acțiune de la %s', [ $this->name ]);
     $inter = new Interactor($this->binary, $gameState);
     $inter->run();

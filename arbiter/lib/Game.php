@@ -1,11 +1,18 @@
 <?php
 
 class Game {
-  public int $n; // Numărul de jucători
-  public int $curPlayer;
-  public int $roundNo;
-  public Board $board;
-  public array $players;
+  const ACTION_TAKE_THREE = 1;
+  const ACTION_TAKE_TWO = 2;
+  const ACTION_RESERVE = 3;
+  const ACTION_BUY = 4;
+
+  private int $n; // Numărul de jucători
+  private int $curPlayer;
+  private int $roundNo;
+  private Board $board;
+  private array $players;
+  private SaveGame $saveGame;
+  private SaveGameTurn $saveGameTurn;
 
   function __construct(Args $args) {
     $this->initRng($args->getSeed());
@@ -19,6 +26,7 @@ class Game {
     $this->board = new Board($this->n);
     $this->curPlayer = 0;
     $this->roundNo = 0;
+    $this->saveGame = new SaveGame($this->players, $this->board);
   }
 
   private function initRng(int $seed): void {
@@ -111,10 +119,14 @@ class Game {
   private function validateAction(array $action): void {
     $type = $this->shiftAndCheck($action, 1, 4);
     switch ($type) {
-      case 1: $this->validateTakeThree($action); break;
-      case 2: $this->validateTakeTwo($action); break;
-      case 3: $this->validateReserve($action); break;
-      case 4: $this->validateBuy($action); break;
+      case self::ACTION_TAKE_THREE:
+        $this->validateTakeThree($action); break;
+      case self::ACTION_TAKE_TWO:
+        $this->validateTakeTwo($action); break;
+      case self::ACTION_RESERVE:
+        $this->validateReserve($action); break;
+      case self::ACTION_BUY:
+        $this->validateBuy($action); break;
     }
 
     if (count($action)) {
@@ -129,6 +141,8 @@ class Game {
       $this->board->chips[$col] -= $qty;
       $chipStr[] = Str::chips($col, $qty);
     }
+
+    $this->saveGameTurn->addTakeChipsTokens($colors, $qty);
 
     $chipStr = implode(' ', $chipStr);
     Log::info('I-am dat jucătorului %d %s.', [ $this->curPlayer, $chipStr]);
@@ -148,10 +162,13 @@ class Game {
     $pl->gainReserve($id, $hidden);
 
     $gold = Config::NUM_COLORS;
-    if ($this->board->chips[$gold]) {
+    $gainGold = $this->board->chips[$gold];
+    if ($gainGold) {
       $this->board->chips[$gold]--;
       $pl->chips[$gold]++;
     }
+
+    $this->saveGameTurn->addReserveCardTokens($id, $hidden, $gainGold);
   }
 
   private function buyCard(int $id): void {
@@ -160,31 +177,42 @@ class Game {
     $this->board->gainChips($chips);
     $this->board->removeCard($id);
     $pl->gainCard($id);
+    $this->saveGameTurn->addBuyCardTokens($id, $chips);
   }
 
   private function executeAction(array $action): void {
     $type = array_shift($action);
     switch ($type) {
-      case 1: $this->takeChips(array_slice($action, 1), 1); break;
-      case 2: $this->takeChips([ $action[0] ], 2); break;
-      case 3: $this->reserveCard($action[0]); break;
-      case 4: $this->buyCard($action[0]); break;
+      case self::ACTION_TAKE_THREE:
+        $this->takeChips(array_slice($action, 1), 1); break;
+      case self::ACTION_TAKE_TWO:
+        $this->takeChips([ $action[0] ], 2); break;
+      case self::ACTION_RESERVE:
+        $this->reserveCard($action[0]); break;
+      case self::ACTION_BUY:
+        $this->buyCard($action[0]); break;
     }
   }
 
   private function playRound(): void {
     foreach ($this->players as $id => $p) {
+      $this->saveGameTurn = new SaveGameTurn();
       $state = $this->asInputFile();
       try {
-        $action = $p->requestAction($state);
-        $this->validateAction($action);
-        $this->executeAction($action);
+        $output = $p->requestAction($state);
+        $this->saveGameTurn->kibitzes = $output->kibitzes;
+        $this->validateAction($output->tokens);
+        $this->executeAction($output->tokens);
       } catch (SplendorException $e) {
-        Log::warn('Jucătorul %d zice pas din cauza erorii: %s',
-                  [ $this->curPlayer, $e->getMessage() ]);
+        $msg = sprintf('Jucătorul %d zice pas din cauza erorii: %s',
+                       $this->curPlayer, $e->getMessage());
+        Log::warn($msg);
+        $this->saveGameTurn->addTakeChipsTokens([], 0);
+        $this->saveGameTurn->arbiterMsg = $msg;
       }
       $this->print();
       $this->curPlayer = ($this->curPlayer + 1) % $this->n;
+      $this->saveGame->addTurn($this->saveGameTurn);
     }
   }
 
@@ -194,7 +222,7 @@ class Game {
         return true;
       }
     }
-    if ($this->roundNo >= 100) {
+    if ($this->roundNo >= Config::MAX_ROUNDS) {
       return true;
     }
     return false;
@@ -206,6 +234,11 @@ class Game {
       $this->playRound();
       $this->roundNo++;
     } while (!$this->isOver());
+  }
+
+  function save(string $saveGameFile): void {
+    $json = $this->saveGame->asJson() . "\n";
+    file_put_contents($saveGameFile, $json);
   }
 
   function asInputFile(): string {

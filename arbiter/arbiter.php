@@ -20,6 +20,11 @@ function main(): void {
     Noble::loadCsv(__DIR__ . '/../nobles.csv');
     $game = new Game($args);
     $game->run();
+
+    $saveGameFile = $args->getSaveGameFile();
+    if ($saveGameFile) {
+      $game->save($saveGameFile);
+    }
   } catch (SplendorException $e) {
     Log::fatal($e->getMessage());
   }

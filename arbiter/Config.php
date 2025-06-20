@@ -14,6 +14,9 @@ class Config {
 
   const KIBITZ_PREFIX = 'kibitz ';
 
+  // Limită hard pentru cazul în care agenții intră în buclă.
+  const MAX_ROUNDS = 100;
+
   /**
    * Constante specifice jocului Splendor.
    **/

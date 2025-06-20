@@ -4,6 +4,7 @@ class Args {
   private array $binaries;
   private array $names;
   private int $seed;
+  private string $saveGameFile;
 
   // PHP's getopt() will return a string if an argument appears once, but an
   // array if the argument appears multiple times. Convert the first situation
@@ -13,7 +14,7 @@ class Args {
   }
 
   function parse(): void {
-    $opts = getopt('b:n:s:');
+    $opts = getopt('b:n:s:g:');
     if (empty($opts)) {
       $this->usage();
       exit(1);
@@ -22,6 +23,7 @@ class Args {
     $this->binaries = $this->asArray($opts['b'] ?? []);
     $this->names = $this->asArray($opts['n'] ?? []);
     $this->seed = $opts['s'] ?? 0;
+    $this->saveGameFile = $opts['g'] ?? '';
     $this->validate();
   }
 
@@ -59,5 +61,9 @@ class Args {
 
   function getSeed(): int {
     return $this->seed;
+  }
+
+  function getSaveGameFile(): string {
+    return $this->saveGameFile;
   }
 }
