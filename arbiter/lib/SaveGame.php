@@ -19,32 +19,14 @@ class SaveGame {
   }
 
   function addNobles(array $nobleIds): void {
-    $this->nobles = [];
-    foreach ($nobleIds as $id) {
-      $noble = Noble::get($id);
-      $this->nobles[] = [
-        'id' => $id,
-        'cost' => $noble->cost,
-      ];
-    }
+    $this->nobles = $nobleIds;
   }
 
   function addDecks(array $decks): void {
     $this->decks = [];
     foreach ($decks as $deck) {
       $cardIds = array_merge($deck->faceUp, $deck->faceDown);
-      $rec = [];
-      foreach ($cardIds as $id) {
-        $card = Card::get($id);
-        $rec[] = [
-          'id' => $id,
-          'cost' => $card->cost,
-          'color' => $card->color,
-          'points' => $card->points,
-          'level' => $card->level,
-        ];
-      }
-      $this->decks[] = $rec;
+      $this->decks[] = $cardIds;
     }
   }
 
