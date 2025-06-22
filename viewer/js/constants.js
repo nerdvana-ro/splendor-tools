@@ -1,0 +1,126 @@
+// Constante referitoare la interfață
+const CHIP_STACK_HEIGHT = 7;
+
+// Constante referitoare la regulile jocului.
+const NUM_COLORS = 5;
+const CHIP_SUPPLY = { 1: 4, 2: 4, 3: 5, 4: 7 }; // după numărul de jucători
+const GOLD_SUPPLY = 5;
+const NUM_LEVELS = 3;
+const NUM_FACE_UP_CARDS = 4;
+
+const CARDS = [
+  // * costuri (roșu, verde, albastru, alb, negru)
+  // * culoarea bonus
+  // * puncte
+  // * imaginea de fundal
+  [ /* cărțile sînt indexate de la 1 */ ],
+  [ [ 0, 0, 0, 3, 0 ], 0, 0, 0 ],
+  [ [ 3, 0, 0, 0, 0 ], 1, 0, 8 ],
+  [ [ 0, 0, 0, 0, 3 ], 2, 0, 14 ],
+  [ [ 0, 0, 3, 0, 0 ], 3, 0, 18 ],
+  [ [ 0, 3, 0, 0, 0 ], 4, 0, 26 ],
+  [ [ 0, 1, 2, 0, 0 ], 0, 0, 0 ],
+  [ [ 0, 0, 1, 2, 0 ], 1, 0, 6 ],
+  [ [ 0, 0, 0, 1, 2 ], 2, 0, 14 ],
+  [ [ 2, 0, 0, 0, 1 ], 3, 0, 18 ],
+  [ [ 1, 2, 0, 0, 0 ], 4, 0, 24 ],
+  [ [ 0, 0, 0, 4, 0 ], 0, 1, 2 ],
+  [ [ 0, 0, 0, 0, 4 ], 1, 1, 6 ],
+  [ [ 4, 0, 0, 0, 0 ], 2, 1, 12 ],
+  [ [ 0, 4, 0, 0, 0 ], 3, 1, 20 ],
+  [ [ 0, 0, 4, 0, 0 ], 4, 1, 24 ],
+  [ [ 2, 0, 0, 2, 0 ], 0, 0, 2 ],
+  [ [ 2, 0, 2, 0, 0 ], 1, 0, 8 ],
+  [ [ 0, 2, 0, 0, 2 ], 2, 0, 12 ],
+  [ [ 0, 0, 2, 0, 2 ], 3, 0, 20 ],
+  [ [ 0, 2, 0, 2, 0 ], 4, 0, 26 ],
+  [ [ 0, 1, 1, 1, 1 ], 0, 0, 2 ],
+  [ [ 1, 0, 1, 1, 1 ], 1, 0, 8 ],
+  [ [ 1, 1, 0, 1, 1 ], 2, 0, 12 ],
+  [ [ 1, 1, 1, 0, 1 ], 3, 0, 18 ],
+  [ [ 1, 1, 1, 1, 0 ], 4, 0, 24 ],
+  [ [ 0, 1, 1, 2, 1 ], 0, 0, 0 ],
+  [ [ 1, 0, 1, 1, 2 ], 1, 0, 6 ],
+  [ [ 2, 1, 0, 1, 1 ], 2, 0, 14 ],
+  [ [ 1, 2, 1, 0, 1 ], 3, 0, 20 ],
+  [ [ 1, 1, 2, 1, 0 ], 4, 0, 26 ],
+  [ [ 0, 1, 0, 2, 2 ], 0, 0, 2 ],
+  [ [ 2, 0, 1, 0, 2 ], 1, 0, 6 ],
+  [ [ 2, 2, 0, 1, 0 ], 2, 0, 14 ],
+  [ [ 0, 2, 2, 0, 1 ], 3, 0, 18 ],
+  [ [ 1, 0, 2, 2, 0 ], 4, 0, 24 ],
+  [ [ 1, 0, 0, 1, 3 ], 0, 0, 0 ],
+  [ [ 0, 1, 3, 1, 0 ], 1, 0, 8 ],
+  [ [ 1, 3, 1, 0, 0 ], 2, 0, 12 ],
+  [ [ 0, 0, 1, 3, 1 ], 3, 0, 20 ],
+  [ [ 3, 1, 0, 0, 1 ], 4, 0, 26 ],
+  [ [ 0, 0, 0, 0, 5 ], 0, 2, 1 ],
+  [ [ 0, 5, 0, 0, 0 ], 1, 2, 7 ],
+  [ [ 0, 0, 5, 0, 0 ], 2, 2, 17 ],
+  [ [ 5, 0, 0, 0, 0 ], 3, 2, 19 ],
+  [ [ 0, 0, 0, 5, 0 ], 4, 2, 25 ],
+  [ [ 6, 0, 0, 0, 0 ], 0, 3, 5 ],
+  [ [ 0, 6, 0, 0, 0 ], 1, 3, 7 ],
+  [ [ 0, 0, 6, 0, 0 ], 2, 3, 13 ],
+  [ [ 0, 0, 0, 6, 0 ], 3, 3, 23 ],
+  [ [ 0, 0, 0, 0, 6 ], 4, 3, 29 ],
+  [ [ 0, 0, 0, 3, 5 ], 0, 2, 5 ],
+  [ [ 0, 3, 5, 0, 0 ], 1, 2, 11 ],
+  [ [ 0, 0, 3, 5, 0 ], 2, 2, 13 ],
+  [ [ 5, 0, 0, 0, 3 ], 3, 2, 23 ],
+  [ [ 3, 5, 0, 0, 0 ], 4, 2, 29 ],
+  [ [ 0, 2, 4, 1, 0 ], 0, 2, 1 ],
+  [ [ 0, 0, 2, 4, 1 ], 1, 2, 11 ],
+  [ [ 1, 0, 0, 2, 4 ], 2, 2, 17 ],
+  [ [ 4, 1, 0, 0, 2 ], 3, 2, 19 ],
+  [ [ 2, 4, 1, 0, 0 ], 4, 2, 29 ],
+  [ [ 2, 0, 0, 2, 3 ], 0, 1, 1 ],
+  [ [ 0, 0, 3, 2, 2 ], 1, 1, 11 ],
+  [ [ 3, 2, 2, 0, 0 ], 2, 1, 13 ],
+  [ [ 2, 3, 0, 0, 2 ], 3, 1, 19 ],
+  [ [ 0, 2, 2, 3, 0 ], 4, 1, 25 ],
+  [ [ 2, 0, 3, 0, 3 ], 0, 1, 5 ],
+  [ [ 3, 2, 0, 3, 0 ], 1, 1, 7 ],
+  [ [ 0, 3, 2, 0, 3 ], 2, 1, 17 ],
+  [ [ 3, 0, 3, 2, 0 ], 3, 1, 23 ],
+  [ [ 0, 3, 0, 3, 2 ], 4, 1, 25 ],
+  [ [ 0, 7, 0, 0, 0 ], 0, 4, 3 ],
+  [ [ 0, 0, 7, 0, 0 ], 1, 4, 9 ],
+  [ [ 0, 0, 0, 7, 0 ], 2, 4, 15 ],
+  [ [ 0, 0, 0, 0, 7 ], 3, 4, 21 ],
+  [ [ 7, 0, 0, 0, 0 ], 4, 4, 28 ],
+  [ [ 3, 7, 0, 0, 0 ], 0, 5, 3 ],
+  [ [ 0, 3, 7, 0, 0 ], 1, 5, 10 ],
+  [ [ 0, 0, 3, 7, 0 ], 2, 5, 16 ],
+  [ [ 0, 0, 0, 3, 7 ], 3, 5, 22 ],
+  [ [ 7, 0, 0, 0, 3 ], 4, 5, 28 ],
+  [ [ 3, 6, 3, 0, 0 ], 0, 4, 4 ],
+  [ [ 0, 3, 6, 3, 0 ], 1, 4, 10 ],
+  [ [ 0, 0, 3, 6, 3 ], 2, 4, 15 ],
+  [ [ 3, 0, 0, 3, 6 ], 3, 4, 22 ],
+  [ [ 6, 3, 0, 0, 3 ], 4, 4, 27 ],
+  [ [ 0, 3, 5, 3, 3 ], 0, 3, 4 ],
+  [ [ 3, 0, 3, 5, 3 ], 1, 3, 9 ],
+  [ [ 3, 3, 0, 3, 5 ], 2, 3, 16 ],
+  [ [ 5, 3, 3, 0, 3 ], 3, 3, 21 ],
+  [ [ 3, 5, 3, 3, 0 ], 4, 3, 27 ],
+];
+
+const NOBLES = [
+  // * costuri (roșu, verde, albastru, alb, negru)
+  [ /* nobilii sînt indexați de la 1 */ ],
+  // costuri
+  [ 4, 4, 0, 0, 0 ],
+  [ 0, 4, 4, 0, 0 ],
+  [ 0, 0, 4, 4, 0 ],
+  [ 0, 0, 0, 4, 4 ],
+  [ 4, 0, 0, 0, 4 ],
+  [ 3, 3, 3, 0, 0 ],
+  [ 0, 3, 3, 3, 0 ],
+  [ 0, 0, 3, 3, 3 ],
+  [ 3, 0, 0, 3, 3 ],
+  [ 3, 3, 0, 0, 3 ],
+];
+
+const SAMPLE_GAME = ` {"players":["doofus1","doofus2"],"decks":[[19,29,1,16,5,30,10,12,27,2,20,26,40,39,4,11,3,33,37,34,6,23,14,15,17,7,31,32,25,28,8,38,21,36,22,35,9,18,13,24],[50,49,61,68,65,43,69,45,63,54,52,48,56,47,70,55,44,59,58,57,64,62,53,42,46,41,67,51,66,60],[74,71,82,73,80,85,87,89,77,84,78,90,76,72,81,86,75,83,79,88]],"nobles":[6,2,8],"rounds":[[{"tokens":[1,0,1,1,0,1],"kibitzes":["Completez cu 3 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[1,1,0,1,1,0],"kibitzes":["Completez cu 3 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""}],[{"tokens":[1,1,1,1,0,0],"kibitzes":["Str\u00eeng pentru cartea 29.","Completez cu 1 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[1,1,0,0,1,1],"kibitzes":["Str\u00eeng pentru cartea 16.","Completez cu 1 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""}],[{"tokens":[4,29,1,2,1,0,1,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,16,2,0,0,2,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,1,1,0,0],"kibitzes":["Str\u00eeng pentru cartea 30."],"arbiterMsg":""},{"tokens":[1,0,1,1,1,0],"kibitzes":["Str\u00eeng pentru cartea 30."],"arbiterMsg":""}],[{"tokens":[4,30,1,1,2,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[1,1,1,0,1,0],"kibitzes":["Str\u00eeng pentru cartea 10.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""}],[{"tokens":[1,1,0,1,0,1],"kibitzes":["Completez cu 3 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[4,10,0,2,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,0,0,1,1],"kibitzes":["Str\u00eeng pentru cartea 61."],"arbiterMsg":""},{"tokens":[4,19,0,0,2,0,1,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,61,2,0,0,1,2,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,1,0,0,0,2,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,0,1,1,0,1],"kibitzes":["Str\u00eeng pentru cartea 27.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[4,2,1,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,27,0,0,1,0,1,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[1,0,1,1,1,0],"kibitzes":["Str\u00eeng pentru cartea 20.","Completez cu 1 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""}],[{"tokens":[1,0,1,1,1,0],"kibitzes":["Str\u00eeng pentru cartea 20.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[4,20,0,1,0,1,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,5,0,2,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[2,0,0,0,0,2],"kibitzes":["Str\u00eeng pentru cartea 12."],"arbiterMsg":""}],[{"tokens":[4,26,0,0,1,1,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,12,0,0,0,0,2,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,1,0,0,1],"kibitzes":["Str\u00eeng pentru cartea 40.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[1,0,1,1,0,1],"kibitzes":["Str\u00eeng pentru cartea 68."],"arbiterMsg":""}],[{"tokens":[4,40,1,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,68,0,1,2,0,1,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,3,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,33,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[2,0,0,0,2,0],"kibitzes":["Str\u00eeng pentru cartea 65."],"arbiterMsg":""},{"tokens":[1,0,1,1,1,0],"kibitzes":["Str\u00eeng pentru cartea 37.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""}],[{"tokens":[4,65,0,1,1,2,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,37,0,0,1,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,0,0,1,1],"kibitzes":["Str\u00eeng pentru cartea 50.","Completez cu 2 jetoane la \u00eent\u00eemplare."],"arbiterMsg":""},{"tokens":[4,34,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,50,0,0,0,0,2,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,6,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,23,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,14,0,1,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[2,0,0,0,0,2],"kibitzes":["Str\u00eeng pentru cartea 74."],"arbiterMsg":""},{"tokens":[4,11,0,0,0,1,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,74,0,0,0,0,2,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,17,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,7,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,31,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,32,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,25,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,28,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,8,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,69,1,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,63,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,38,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,54,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,21,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,36,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,22,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,35,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,9,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,18,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,45,0,0,0,1,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,43,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,56,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,82,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,13,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,85,0,0,0,0,0,0],"kibitzes":[],"arbiterMsg":""}]]}
+`;

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="ro">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Splendor Viewer</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/main.js"></script>
+  </head>
+
+  <body>
+    <div class="card card-back" id="card-back-stub">
+      <div class="counter game-font"></div>
+    </div>
+
+    <div class="card card-front" id="card-front-stub">
+      <div class="header"></div>
+      <div class="points"></div>
+      <div class="gem"></div>
+      <div class="costs">
+        <div class="cost"></div>
+        <div class="cost"></div>
+        <div class="cost"></div>
+        <div class="cost"></div>
+      </div>
+    </div>
+
+    <div class="chip-stack" id="chip-stack-stub">
+      <div class="stack">
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+      </div>
+      <div class="counter game-font"></div>
+    </div>
+
+    <div class="noble" data-id="" id="noble-stub">
+      <div class="costs">
+      </div>
+    </div>
+
+    <div class="minicard" id="noble-cost-stub">
+    </div>
+
+    <div id="board">
+      <div id="decks">
+        <div class="deck"></div>
+        <div class="deck"></div>
+        <div class="deck"></div>
+      </div>
+      <div id="chips">
+      </div>
+      <div id="nobles">
+      </div>
+    </div>
+
+    <footer>
+      <form id="file-loader">
+        <label for="file-field">Alege un jurnal pentru încărcare:</label>
+        <input type="file" id="file-field" name="file-field">
+      </form>
+    </footer>
+  </body>
+</html>
