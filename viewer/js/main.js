@@ -91,12 +91,14 @@ $(function() {
 
   class UI {
     game;
+    cards;
 
     constructor(game) {
       this.game = game;
-      this.recreateDecks();
-      this.recreateChips();
-      this.recreateNobles();
+      this.createCards();
+      this.createDecks();
+      this.createChips();
+      this.createNobles();
     }
 
     getDecks() {
@@ -144,22 +146,64 @@ $(function() {
       return `url(img/noble-${id}.webp)`;
     }
 
-    recreateDecks() {
-      this.getDecks().each(function(row) {
-        $(this).empty();
-        let back = cardBackStub.clone();
-        let rev = NUM_LEVELS - row;
-        back.addClass(`card-back-${rev}`);
-        back.appendTo($(this));
-
-        for (let c = 0; c < NUM_FACE_UP_CARDS; c++) {
-          let front = cardFrontStub.clone();
-          front.appendTo($(this));
+    createCardCosts(elem, costs) {
+      let i = 0;
+      for (let color = 0; color < NUM_COLORS; color++) {
+        let cost = costs[color];
+        if (cost) {
+          let img = this.getDigitImg(cost) + ', ' + this.getMinicardImg(color);
+          elem.find('.cost').eq(i).css('background-image', img);
+          i++;
         }
-     });
+      }
+
+      // hide other cost circles
+      elem.find('.cost').slice(i).css('visibility', 'hidden');
     }
 
-    recreateChips() {
+    createCard(id, data) {
+      let div = cardFrontStub.clone();
+      let costs = data[0];
+      let color = data[1];
+      let points = data[2];
+      let bg = data[3];
+      div.css('background-image', this.getCardFrontImg(bg));
+      div.find('.header').css('background-image', this.getCardHeaderImg(color));
+      div.find('.gem').css('background-image', this.getGemImg(color));
+      if (points) {
+        div.find('.points').css('background-image', this.getDigitImg(points));
+      }
+      this.createCardCosts(div.find('.costs'), costs);
+      return div;
+    }
+
+    createCards() {
+      if (this.cards == undefined) {
+        this.cards = [ [] ]; // cărțile sînt indexate de la 1.
+        for (let id = 1; id < CARDS.length; id++) {
+          this.cards.push(this.createCard(id, CARDS[id]));
+        }
+      }
+    }
+
+    createDecks() {
+      for (let row = 1; row <= NUM_LEVELS; row++) {
+        let deck = NUM_LEVELS - row;
+        let div = this.getDeck(row - 1);
+        div.empty();
+        let back = cardBackStub.clone();
+        back.addClass(`card-back-${row}`);
+        div.append(back);
+
+        for (let c = 0; c < NUM_FACE_UP_CARDS; c++) {
+          let card = game.board.decks[deck].faceUp[c];
+          let cardDiv = this.cards[card.id].clone();
+          div.append(cardDiv);
+        }
+      }
+    }
+
+    createChips() {
       $('#chips').empty();
       let self = this;
       for (let col = 0; col <= NUM_COLORS; col++) {
@@ -173,7 +217,7 @@ $(function() {
       }
     }
 
-    recreateNobles() {
+    createNobles() {
       $('#nobles').empty();
       for (const id of game.board.nobles) {
         this.createNoble(id);
@@ -196,37 +240,6 @@ $(function() {
       }
     }
 
-    drawCardCosts(id, div) {
-      let i = 0;
-      let costs = CARDS[id][0];
-      let bonus = CARDS[id][1];
-      for (let color = 0; color < NUM_COLORS; color++) {
-        let cost = costs[color];
-        if (cost) {
-          let img = this.getDigitImg(cost) + ', ' + this.getMinicardImg(color);
-          let costDiv = div.find('.cost').eq(i);
-          costDiv.css('background-image', img);
-          i++;
-        }
-      }
-
-      // hide other cost circles
-      div.find('.cost').slice(i).css('visibility', 'hidden');
-    }
-
-    drawCard(id, deck, col) {
-      let row = NUM_LEVELS - 1 - deck;
-      let div = this.getCardDiv(row, col);
-      let card = game.getCard(deck, col);
-      div.css('background-image', this.getCardFrontImg(card.background));
-      div.find('.header').css('background-image', this.getCardHeaderImg(card.color));
-      div.find('.gem').css('background-image', this.getGemImg(card.color));
-      if (card.points) {
-        div.find('.points').css('background-image', this.getDigitImg(card.points));
-      }
-      this.drawCardCosts(id, div);
-    }
-
     drawCardBack(deck) {
       let cnt = game.board.decks[deck].faceDown.length;
       let div = this.getDeck(deck).find('.card-back');
@@ -240,11 +253,6 @@ $(function() {
 
     drawDecks() {
       for (let d = 0; d < game.board.decks.length; d++) {
-        let deck = game.board.decks[d];
-        for (let c = 0; c < deck.faceUp.length; c++) {
-          let card = deck.faceUp[c];
-          this.drawCard(card.id, d, c);
-        }
         this.drawCardBack(d);
       }
     }
