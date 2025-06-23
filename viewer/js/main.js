@@ -222,15 +222,14 @@ $(function() {
 
     createDecks() {
       for (let row = 0; row < NUM_LEVELS; row++) {
-        let deck = NUM_LEVELS - 1 - row;
         let div = this.getDeck(row);
         div.empty();
         let back = cardBackStub.clone();
-        back.addClass(`card-back-${deck+1}`);
+        back.addClass(`card-back-${row+1}`);
         div.append(back);
 
         for (let c = 0; c < NUM_FACE_UP_CARDS; c++) {
-          let card = this.game.board.decks[deck].faceUp[c];
+          let card = this.game.board.decks[row].faceUp[c];
           let cardDiv = this.cards[card.id].clone();
           div.append(cardDiv);
         }

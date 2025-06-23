@@ -32,6 +32,11 @@ div#board {
   width: 700px;
 }
 
+#decks {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 div.deck {
   display: flex;
   gap: 20px;
