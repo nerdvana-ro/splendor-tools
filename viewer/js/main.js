@@ -509,6 +509,13 @@ $(function() {
       }
     }
 
+    returnChips(colors) {
+      for (const c of colors) {
+        this.modifyBoardChips(c, +1);
+        this.modifyPlayerChips(c, -1);
+      }
+    }
+
     moveForward() {
       if (this.isOver()) {
         return;
@@ -518,6 +525,7 @@ $(function() {
       this.logKibitzes(move.kibitzes);
       this.logArbiterMessage(move.arbiterMsg);
       this.executeAction(move.tokens);
+      this.returnChips(move.returns);
 
       if (++this.curPlayer == this.game.players.length) {
         this.curRound++;

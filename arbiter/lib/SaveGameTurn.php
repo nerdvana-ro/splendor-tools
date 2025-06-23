@@ -7,11 +7,13 @@
 
 class SaveGameTurn {
   public array $tokens; // un vector de întregi care codifică mutarea
+  public array $returns; // culorile jetoanelor returnate
   public array $kibitzes; // un vector de stringuri chibițate de agent
   public string $arbiterMsg; // un mesaj adăugat de arbitru pentru mutări incorecte
 
   function __construct() {
     $this->tokens = [];
+    $this->returns = [];
     $this->kibitzes = [];
     $this->arbiterMsg = '';
   }
@@ -41,6 +43,7 @@ class SaveGameTurn {
   function asArray(): array {
     return [
       'tokens' => $this->tokens,
+      'returns' => $this->returns,
       'kibitzes' => $this->kibitzes,
       'arbiterMsg' => $this->arbiterMsg,
     ];

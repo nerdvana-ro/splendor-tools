@@ -261,6 +261,7 @@ div.chip-stack .counter {
   color: white;
   display: flex;
   flex-direction: column-reverse;
+  height: 800px;
   margin: 0px 30px;
   overflow-y: auto;
   width: 400px;

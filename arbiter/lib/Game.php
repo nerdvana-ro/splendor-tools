@@ -265,6 +265,7 @@ class Game {
       $color = array_shift($action);
       $pl->chips[$color]--;
       $this->board->chips[$color]++;
+      $this->saveGameTurn->returns[] = $color;
     }
   }
 
