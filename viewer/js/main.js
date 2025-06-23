@@ -486,7 +486,7 @@ $(function() {
       }
     }
 
-    actionBuy(id, cost) {
+    actionBuy(id, nobleId, cost) {
       for (let c = 0; c <= NUM_COLORS; c++) {
         this.modifyBoardChips(c, +cost[c]);
         this.modifyPlayerChips(c, -cost[c]);
@@ -503,7 +503,8 @@ $(function() {
           break;
         case 4:
           let id = tokens.shift();
-          this.actionBuy(id, tokens);
+          let nobleId = tokens.shift();
+          this.actionBuy(id, nobleId, tokens);
           break;
       }
     }

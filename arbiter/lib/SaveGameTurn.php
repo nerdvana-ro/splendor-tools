@@ -31,9 +31,9 @@ class SaveGameTurn {
     ];
   }
 
-  function addBuyCardTokens(int $id, array $chips): void {
+  function addBuyCardTokens(int $id, int $nobleId, array $chips): void {
     $this->tokens = array_merge(
-      [ Game::ACTION_BUY, $id ],
+      [ Game::ACTION_BUY, $id, $nobleId ],
       $chips
     );
   }

@@ -55,30 +55,39 @@ class Game {
     return $first;
   }
 
-  private function validateTakeThree(array &$action): void {
+  // Returnează un vector caracteristic de jetoane luate.
+  private function validateTakeThree(array &$action): array {
+    $gains  = array_fill(0, Config::NUM_COLORS + 1, 0);
     $cnt = $this->shiftAndCheck($action, 0, 3);
-    $taken = [];
     while ($cnt--) {
       $color = $this->shiftAndCheck($action, 0, Config::NUM_COLORS - 1);
-      if (isset($taken[$color])) {
+      if ($gains[$color]) {
         throw new SplendorException("Ai cerut două jetoane de culoarea {$color}.");
       }
-      $taken[$color] = true;
       if (!$this->board->chips[$color]) {
         throw new SplendorException("Pe masă nu există jetoane de culoarea {$color}.");
       }
+      $gains[$color]++;
     }
+
+    return $gains;
   }
 
-  private function validateTakeTwo(array &$action): void {
+  // Returnează un vector caracteristic de jetoane luate.
+  private function validateTakeTwo(array &$action): array {
+    $gains  = array_fill(0, Config::NUM_COLORS + 1, 0);
     $color = $this->shiftAndCheck($action, 0, Config::NUM_COLORS - 1);
     $avail = $this->board->chips[$color];
     if ($avail < Config::TAKE_TWO_LIMIT) {
       throw new SplendorException("Există doar {$avail} jetoane de culoarea {$color}.");
     }
+    $gains[$color] += 2;
+    return $gains;
   }
 
-  private function validateReserve(array &$action): void {
+  // Returnează un vector caracteristic de jetoane luate.
+  private function validateReserve(array &$action): array {
+    $gains  = array_fill(0, Config::NUM_COLORS + 1, 0);
     $id = $this->shiftAndCheck($action, -3, Config::NUM_CARDS);
 
     $numRes = count($this->players[$this->curPlayer]->reserve);
@@ -98,9 +107,18 @@ class Game {
         throw new SplendorException("Cartea #{$id} nu este pe masă.");
       }
     }
+
+    if ($this->board->chips[Config::NUM_COLORS]) {
+      $gains[Config::NUM_COLORS]++; // primește un aur
+    }
+
+    return $gains;
   }
 
-  private function validateBuy(array &$action): void {
+  // Returnează un vector caracteristic de jetoane luate. Acesta este plin de
+  // zerouri (cumpărarea nu produce jetoane).
+  private function validateBuy(array &$action): array {
+    $gains  = array_fill(0, Config::NUM_COLORS + 1, 0);
     $id = $this->shiftAndCheck($action, 1, Config::NUM_CARDS);
     $pl = $this->players[$this->curPlayer];
     $isReserved = $pl->hasInReserve($id);
@@ -113,6 +131,36 @@ class Game {
     if (!$pl->canBuyCard($id)) {
       throw new SplendorException("Nu îți permiți cartea #{$id}.");
     }
+
+    return $gains;
+  }
+
+  private function validateReturnChips(array &$action, array $gains): void {
+    $pl = $this->players[$this->curPlayer];
+    $chips = [];
+    $sum = 0;
+    for ($col = 0; $col <= Config::NUM_COLORS; $col++) {
+      $chips[] = $pl->chips[$col] + $gains[$col];
+      $sum += $chips[$col];
+    }
+
+    $returned = [];
+
+    while ($sum > 10) {
+      $color = $this->shiftAndCheck($action, 0, Config::NUM_COLORS - 1);
+      if (!$chips[$color]) {
+        throw new SplendorException("Nu poți returna un jeton de culoarea {$color}.");
+      }
+      $chips[$color]--;
+      $returned[] = $color;
+      $sum--;
+    }
+
+    if (count($returned)) {
+      $joined = implode(', ', $returned);
+      $msg = "{$pl->name} a returnat jetoane de culorile {$joined}.";
+      $this->saveGameTurn->arbiterMsg = $msg;
+    }
   }
 
   // Ridică SplendorException pentru mutări invalide.
@@ -120,25 +168,30 @@ class Game {
     $type = $this->shiftAndCheck($action, 1, 4);
     switch ($type) {
       case self::ACTION_TAKE_THREE:
-        $this->validateTakeThree($action); break;
+        $gains = $this->validateTakeThree($action); break;
       case self::ACTION_TAKE_TWO:
-        $this->validateTakeTwo($action); break;
+        $gains = $this->validateTakeTwo($action); break;
       case self::ACTION_RESERVE:
-        $this->validateReserve($action); break;
+        $gains = $this->validateReserve($action); break;
       case self::ACTION_BUY:
-        $this->validateBuy($action); break;
+        $gains = $this->validateBuy($action); break;
     }
+
+    $this->validateReturnChips($action, $gains);
 
     if (count($action)) {
       throw new SplendorException("Cuvîntul {$action[0]} este în plus.");
     }
   }
 
-  private function takeChips(array $colors, int $qty): void {
+  private function takeChips(array &$action, int $cnt, int $qty): void {
     $chipStr = [];
-    foreach ($colors as $col) {
+    $colors = [];
+    while ($cnt--) {
+      $col = array_shift($action);
       $this->players[$this->curPlayer]->chips[$col] += $qty;
       $this->board->chips[$col] -= $qty;
+      $colors[] = $col;
       $chipStr[] = Str::chips($col, $qty);
     }
 
@@ -148,7 +201,17 @@ class Game {
     Log::info('I-am dat jucătorului %d %s.', [ $this->curPlayer, $chipStr]);
   }
 
-  private function reserveCard(int $id): void {
+  private function takeThreeChips(array &$action): void {
+    $cnt = array_shift($action);
+    $this->takeChips($action, $cnt, 1);
+  }
+
+  private function takeTwoChips(array &$action): void {
+    $this->takeChips($action, 1, 2);
+  }
+
+  private function reserveCard(array &$action): void {
+    $id = array_shift($action);
     $pl = $this->players[$this->curPlayer];
 
     if ($id < 0) {
@@ -171,27 +234,54 @@ class Game {
     $this->saveGameTurn->addReserveCardTokens($id, $hidden, $gainGold);
   }
 
-  private function buyCard(int $id): void {
+  // Returnează ID-ul nobilului primit sau 0 dacă jucătorul nu primește niciun
+  // nobil.
+  private function checkNobles(): int {
+    $p = $this->players[$this->curPlayer];
+    $id = $p->getVisitingNoble($this->board->nobles);
+    if ($id) {
+      $this->board->deleteNoble($id);
+      $p->nobles[] = $id;
+      $msg = "{$p->name} primește nobilul #{$id}.";
+      $this->saveGameTurn->arbiterMsg = $msg;
+    }
+    return $id;
+  }
+
+  private function buyCard(array &$action): void {
+    $id = array_shift($action);
     $pl = $this->players[$this->curPlayer];
     $chips = $pl->payForCard($id);
     $this->board->gainChips($chips);
     $this->board->removeCard($id);
     $pl->gainCard($id);
-    $this->saveGameTurn->addBuyCardTokens($id, $chips);
+    $visitingNoble = $this->checkNobles();
+    $this->saveGameTurn->addBuyCardTokens($id, $visitingNoble, $chips);
+  }
+
+  private function returnChips(array &$action): void {
+    $pl = $this->players[$this->curPlayer];
+    while (!empty($action)) {
+      $color = array_shift($action);
+      $pl->chips[$color]--;
+      $this->board->chips[$color]++;
+    }
   }
 
   private function executeAction(array $action): void {
     $type = array_shift($action);
     switch ($type) {
       case self::ACTION_TAKE_THREE:
-        $this->takeChips(array_slice($action, 1), 1); break;
+        $this->takeThreeChips($action); break;
       case self::ACTION_TAKE_TWO:
-        $this->takeChips([ $action[0] ], 2); break;
+        $this->takeTwoChips($action); break;
       case self::ACTION_RESERVE:
-        $this->reserveCard($action[0]); break;
+        $this->reserveCard($action); break;
       case self::ACTION_BUY:
-        $this->buyCard($action[0]); break;
+        $this->buyCard($action); break;
     }
+
+    $this->returnChips($action);
   }
 
   private function playRound(): void {

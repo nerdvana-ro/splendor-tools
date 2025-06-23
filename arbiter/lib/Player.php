@@ -30,6 +30,10 @@ class Player {
     return $score;
   }
 
+  function countChips(): int {
+    return array_sum($this->chips);
+  }
+
   function hasInReserve(int $cardId): bool {
     foreach ($this->reserve as $rc) {
       if ($rc->id == $cardId) {
@@ -81,6 +85,27 @@ class Player {
       }
     }
     return ($this->chips[Config::NUM_COLORS] >= $goldNeeded);
+  }
+
+  function canReceiveNoble(int $id): bool {
+    $noble = Noble::get($id);
+    for ($i = 0; $i < Config::NUM_COLORS; $i++) {
+      if ($noble->cost[$i] > $this->cardColors[$i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Returnează ID-ul nobilului primit sau 0 dacă jucătorul nu primește niciun
+  // nobil. Dacă există mai multe variante, o returnează mereu pe prima.
+  function getVisitingNoble(array $nobleIds): int {
+    foreach ($nobleIds as $id) {
+      if ($this->canReceiveNoble($id)) {
+        return $id;
+      }
+    }
+    return 0;
   }
 
   function gainCard(int $id) {

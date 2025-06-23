@@ -49,9 +49,13 @@ class Board {
     }
   }
 
-  function removeCard($id): void {
+  function removeCard(int $id): void {
     $level = Card::get($id)->level;
     $this->decks[$level - 1]->removeCard($id);
+  }
+
+  function deleteNoble(int $id): void {
+    $this->nobles = array_diff($this->nobles, [ $id ]);
   }
 
   function asInputFile(): string {
