@@ -41,29 +41,51 @@
       <div class="counter game-font"></div>
     </div>
 
+    <div class="minicard" id="minicard-stub">
+    </div>
+
     <div class="noble" data-id="" id="noble-stub">
       <div class="costs">
       </div>
     </div>
 
-    <div class="minicard" id="noble-cost-stub">
+    <div class="player" id="player-stub">
+      <div class="header">
+        <div class="name"></div>
+        <div><span class="points game-font">0</span> ⭐</div>
+      </div>
+      <div class="cards"></div>
+      <div class="chips">
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+      </div>
     </div>
 
-    <div id="board">
-      <div id="decks">
-        <div class="deck"></div>
-        <div class="deck"></div>
-        <div class="deck"></div>
+    <div class="two-columns">
+      <div id="board">
+        <div id="decks">
+          <div class="deck"></div>
+          <div class="deck"></div>
+          <div class="deck"></div>
+        </div>
+        <div id="chips">
+        </div>
+        <div id="nobles">
+        </div>
       </div>
-      <div id="chips">
-      </div>
-      <div id="nobles">
+      <div id="players">
       </div>
     </div>
 
-    <footer>
+    <footer class="controls">
+      <button id="forward" type="button">⏭</button>
+
       <form id="file-loader">
-        <label for="file-field">Alege un jurnal pentru încărcare:</label>
+        <label for="file-field">Alege o partidă:</label>
         <input type="file" id="file-field" name="file-field">
       </form>
     </footer>

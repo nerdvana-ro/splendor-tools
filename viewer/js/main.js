@@ -4,8 +4,9 @@ $(function() {
   let cardBackStub = $('#card-back-stub').detach().removeAttr('id');
   let cardFrontStub = $('#card-front-stub').detach().removeAttr('id');
   let chipStackStub = $('#chip-stack-stub').detach().removeAttr('id');
+  let minicardStub = $('#minicard-stub').detach().removeAttr('id');
   let nobleStub = $('#noble-stub').detach().removeAttr('id');
-  let nobleCostStub = $('#noble-cost-stub').detach().removeAttr('id');
+  let playerStub = $('#player-stub').detach().removeAttr('id');
 
   class Card {
     id;
@@ -99,6 +100,8 @@ $(function() {
       this.createDecks();
       this.createChips();
       this.createNobles();
+      this.createPlayers();
+      this.updatePlayerCardsAndChips();
     }
 
     getDecks() {
@@ -115,6 +118,18 @@ $(function() {
 
     getChipStack(col) {
       return $('#chips').find('.chip-stack').eq(col);
+    }
+
+    getPlayer(id) {
+      return $('#players').find('.player').eq(id);
+    }
+
+    getPlayerMinicard(id, col) {
+      return this.getPlayer(id).find('.cards .minicard').eq(col);
+    }
+
+    getPlayerChip(id, col) {
+      return this.getPlayer(id).find('.chips .chip').eq(col);
     }
 
     getCardFrontImg(id) {
@@ -232,10 +247,63 @@ $(function() {
       for (let col = 0; col < NUM_COLORS; col++) {
         let cost = NOBLES[id][col];
         if (cost) {
-          let mc = nobleCostStub.clone();
+          let mc = minicardStub.clone();
           let imgs = this.getDigitImg(cost) + ', ' + this.getMinicardImg(col);
           mc.css('background-image', imgs);
           n.find('.costs').append(mc);
+        }
+      }
+    }
+
+    createPlayerCards(elem) {
+      for (let col = 0; col < NUM_COLORS; col++) {
+        elem.append(minicardStub.clone());
+      }
+    }
+
+    createPlayers() {
+      $('#players').empty();
+      for (const p of this.game.players) {
+        let div = playerStub.clone();
+        div.find('.name').text(p.name);
+        this.createPlayerCards(div.find('.cards'));
+        $('#players').append(div);
+      }
+    }
+
+    updatePlayerCard(p, col) {
+      let div = this.getPlayerMinicard(p, col);
+      let cnt = this.game.players[p].cards[col];
+      cnt = col;
+
+      let digit = this.getDigitImg(cnt);
+      let bg = this.getMinicardImg(col);
+      let imgs = cnt ? (digit + ', ' + bg) : bg;
+
+      div.css('background-image', imgs);
+      div.css('opacity', cnt ? 1 : 0.3);
+    }
+
+    updatePlayerChip(p, col) {
+      let div = this.getPlayerChip(p, col);
+      let cnt = this.game.players[p].chips[col];
+      cnt = col;
+
+      let digit = this.getDigitImg(cnt);
+      let bg = this.getChipImg(col);
+      let imgs = cnt ? (digit + ', ' + bg) : bg;
+
+      div.css('background-image', imgs);
+      div.css('visibility', cnt ? 'visible' : 'hidden');
+    }
+
+    updatePlayerCardsAndChips() {
+      for (let p = 0; p < this.game.players.length; p++) {
+        for (let col = 0; col < NUM_COLORS; col++) {
+          this.updatePlayerCard(p, col);
+        }
+        for (let col = 0; col <= NUM_COLORS; col++) {
+          this.updatePlayerChip(p, col);
         }
       }
     }

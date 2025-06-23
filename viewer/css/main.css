@@ -10,6 +10,7 @@
   --chip-img-width: 203;
   --chip-img-height: 182;
   --chip-width: 70px;
+  --player-chip-width: 25px;
 
   --minicard-img-width: 108;
   --minicard-img-height: 133;
@@ -17,12 +18,15 @@
 }
 
 body {
+  background: linear-gradient(90deg, rgba(26, 95, 122, 1) 0%, rgba(75, 158, 209, 1) 100%);
   margin: 0;
 }
 
+.two-columns {
+  display: flex;
+}
+
 div#board {
-  background: #1a5f7a;
-  background: linear-gradient(90deg, rgba(26, 95, 122, 1) 0%, rgba(75, 158, 209, 1) 100%);
   padding: 30px;
   width: 700px;
 }
@@ -34,8 +38,9 @@ div.deck {
 }
 
 div.card {
-  background-size: 100%;
+  background-position: center;
   border-radius: 10px;
+  background-size: 102%; /* ascunde niște artefacte de la margine */
   box-shadow: 5px 5px 3px #222;
   height: calc(var(--card-width) / var(--card-img-width) * var(--card-img-height));
   width: var(--card-width);
@@ -128,12 +133,9 @@ div.chip-stack .stack {
 }
 
 div.chip-stack .chip {
-  position: absolute;
-}
-
-.chip {
   background-size: 100%;
   height: calc(var(--chip-width) / var(--chip-img-width) * var(--chip-img-height));
+  position: absolute;
   width: var(--chip-width);
 }
 
@@ -190,6 +192,68 @@ div.chip-stack .counter {
   width: var(--minicard-width);
 }
 
+#players {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+}
+
+.player {
+  background: #444;
+  border-radius: 5px;
+  box-shadow: 5px 5px 3px #222;
+  color: white;
+  height: 200px;
+  width: 220px;
+}
+
+.player .header {
+  border-radius: 5px 5px 0 0;
+  border-bottom: 1px solid #222;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.player .cards, .player .chips {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+
+.player .minicard {
+  background-size: 100%;
+  height: calc(var(--minicard-width) / var(--minicard-img-width) * var(--minicard-img-height));
+  width: var(--minicard-width);
+}
+
+.player .chip {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 70%, 100%;
+  height: calc(var(--player-chip-width) / var(--chip-img-width) * var(--chip-img-height));
+  min-width: var(--player-chip-width);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#forward {
+  font-size: 30px;
+  height: 40px;
+  width: 100px;
+}
+
+input[type='file'] {
+  color: transparent;
+}
+
 /* latin */
 @font-face {
   font-family: 'Courgette';
@@ -200,8 +264,6 @@ div.chip-stack .counter {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-div.game-font {
+.game-font {
   font-family: "Courgette", cursive;
-  font-weight: 400;
-  font-style: normal;
 }
