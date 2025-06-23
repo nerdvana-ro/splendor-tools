@@ -41,6 +41,12 @@ $(function() {
         this.faceDown.push(new Card(id));
       }
     }
+
+    replaceCard(col) {
+      this.faceUp[col] = this.faceDown.length
+        ? this.faceDown.shift()
+        : null;
+    }
   }
 
   class Board {
@@ -61,10 +67,10 @@ $(function() {
     }
 
     findCard(id) {
-      for (let d = 0; d < this.decks.length; d++) {
-        for (let c = 0; c < this.decks[d].faceUp.length; c++) {
-          if (this.decks[d].faceUp[c].id == id) {
-            return { deck: d, col: c };
+      for (let r = 0; r < this.decks.length; r++) {
+        for (let c = 0; c < this.decks[r].faceUp.length; c++) {
+          if (this.decks[r].faceUp[c].id == id) {
+            return { row: r, col: c };
           }
         }
       }
@@ -99,8 +105,8 @@ $(function() {
       }
     }
 
-    getCard(row, col) {
-      return this.board.decks[row].faceUp[col];
+    replaceCard(row, col) {
+      this.board.decks[row].replaceCard(col);
     }
   }
 
@@ -329,7 +335,18 @@ $(function() {
       this.getPlayerScore(p).text(score);
     }
 
-    drawCardBack(deck) {
+    updateCard(row, col) {
+      let card = this.game.board.decks[row].faceUp[col];
+      let existingDiv = this.getCardDiv(row, col);
+      if (card) {
+        let div = this.cards[card.id].clone();
+        existingDiv.replaceWith(div);
+      } else {
+        existingDiv.css('visibility', 'hidden');
+      }
+    }
+
+    updateCardBack(deck) {
       let cnt = this.game.board.decks[deck].faceDown.length;
       let div = this.getDeck(deck).find('.card-back');
       if (cnt) {
@@ -342,7 +359,7 @@ $(function() {
 
     drawDecks() {
       for (let d = 0; d < this.game.board.decks.length; d++) {
-        this.drawCardBack(d);
+        this.updateCardBack(d);
       }
     }
 
@@ -445,8 +462,9 @@ $(function() {
 
     gainCardFromBoard(id) {
       let pos = this.game.board.findCard(id);
-      let row = NUM_COLORS - 1 - pos;
-      /* todo: continue replacing the card */
+      this.game.replaceCard(pos.row, pos.col);
+      this.ui.updateCard(pos.row, pos.col);
+      this.ui.updateCardBack(pos.row);
     }
 
     gainCard(id) {
