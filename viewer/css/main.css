@@ -193,6 +193,16 @@ div.chip-stack .counter {
   width: 120px;
 }
 
+.noble .id {
+  background: rgba(0, 0, 0, 0.3);
+  top: 5px;
+  color: white;
+  font-size: 10px;
+  padding: 2px;
+  position: absolute;
+  right: 5px;
+}
+
 .noble .costs {
   bottom: 7px;
   display: flex;
@@ -253,6 +263,16 @@ div.chip-stack .counter {
   background-size: 70%, 100%;
   height: calc(var(--player-chip-width) / var(--chip-img-width) * var(--chip-img-height));
   min-width: var(--player-chip-width);
+}
+
+.player .nobles {
+  display: flex;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.player .nobles .noble {
+  zoom: 0.33;
 }
 
 .log-wrapper {

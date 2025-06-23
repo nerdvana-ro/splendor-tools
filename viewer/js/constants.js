@@ -7,6 +7,7 @@ const CHIP_SUPPLY = { 1: 4, 2: 4, 3: 5, 4: 7 }; // după numărul de jucători
 const GOLD_SUPPLY = 5;
 const NUM_LEVELS = 3;
 const NUM_FACE_UP_CARDS = 4;
+const NOBLE_POINTS = 3;
 
 const CARDS = [
   // * costuri (roșu, verde, albastru, alb, negru)

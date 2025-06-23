@@ -113,15 +113,17 @@ $(function() {
   class UI {
     game;
     cards;
+    nobles;
 
     constructor(game) {
       this.game = game;
       this.createCards();
+      this.createNobles();
       this.createDecks();
       this.createChips();
-      this.createNobles();
       this.createPlayers();
       this.updatePlayerCardsAndChips();
+      this.updateNobles();
     }
 
     getDecks() {
@@ -219,7 +221,7 @@ $(function() {
 
     createCards() {
       if (this.cards == undefined) {
-        this.cards = [ [] ]; // cărțile sînt indexate de la 1.
+        this.cards = [ [] ]; // Cărțile sînt indexate de la 1.
         for (let id = 1; id < CARDS.length; id++) {
           this.cards.push(this.createCard(id, CARDS[id]));
         }
@@ -257,17 +259,19 @@ $(function() {
     }
 
     createNobles() {
-      $('#nobles').empty();
-      for (const id of this.game.board.nobles) {
-        this.createNoble(id);
+      if (this.nobles == undefined) {
+        this.nobles = [ [] ]; // Nobilii sînt indexați de la 1.
+        for (let id = 1; id < NOBLES.length; id++) {
+          this.nobles.push(this.createNoble(id));
+        }
       }
     }
 
     createNoble(id) {
       let n = nobleStub.clone();
       n.css('background-image', this.getNobleImg(id));
+      n.find('.id').text('#' + id);
       n.attr('data-id', id);
-      n.appendTo('#nobles');
       for (let col = 0; col < NUM_COLORS; col++) {
         let cost = NOBLES[id][col];
         if (cost) {
@@ -277,6 +281,17 @@ $(function() {
           n.find('.costs').append(mc);
         }
       }
+      return n;
+    }
+
+    deleteBoardNoble(id) {
+      $(`#nobles .noble[data-id=${id}]`).remove();
+    }
+
+    addPlayerNoble(playerId, nobleId) {
+      let container = this.getPlayer(playerId).find('.nobles');
+      let div = this.nobles[nobleId].clone();
+      container.append(div);
     }
 
     createPlayerCards(elem) {
@@ -292,6 +307,14 @@ $(function() {
         div.find('.name').text(p.name);
         this.createPlayerCards(div.find('.cards'));
         $('#players').append(div);
+      }
+    }
+
+    updateNobles() {
+      $('#nobles').empty();
+      for (const id of this.game.board.nobles) {
+        let div = this.nobles[id].clone();
+        $('#nobles').append(div);
       }
     }
 
@@ -415,6 +438,14 @@ $(function() {
       this.curPlayer = 0;
 
       this.ui.drawAll();
+      this.updateRound();
+    }
+
+    updateRound() {
+      if (!this.isOver()) {
+        $('.controls .cur-round').text(1 + this.curRound);
+        $('.controls .num-rounds').text(this.rounds.length);
+      }
     }
 
     isOver() {
@@ -486,12 +517,21 @@ $(function() {
       }
     }
 
+    gainNoble(id) {
+      this.ui.deleteBoardNoble(id);
+      this.ui.addPlayerNoble(this.curPlayer, id);
+      this.gainPoints(NOBLE_POINTS);
+    }
+
     actionBuy(id, nobleId, cost) {
       for (let c = 0; c <= NUM_COLORS; c++) {
         this.modifyBoardChips(c, +cost[c]);
         this.modifyPlayerChips(c, -cost[c]);
       }
       this.gainCard(id);
+      if (nobleId) {
+        this.gainNoble(nobleId);
+      }
     }
 
     executeAction(tokens) {
@@ -530,6 +570,7 @@ $(function() {
       if (++this.curPlayer == this.game.players.length) {
         this.curRound++;
         this.curPlayer = 0;
+        this.updateRound();
       }
     }
   }
