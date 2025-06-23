@@ -26,6 +26,12 @@
         <div class="cost"></div>
         <div class="cost"></div>
       </div>
+      <div class="id"></div>
+    </div>
+
+    <div class="log-message" id="kibitz-stub">
+      <span class="name"></span>
+      <span class="message"></span>
     </div>
 
     <div class="chip-stack" id="chip-stack-stub">
@@ -52,7 +58,7 @@
     <div class="player" id="player-stub">
       <div class="header">
         <div class="name"></div>
-        <div><span class="points game-font">0</span> ⭐</div>
+        <div><span class="score game-font">0</span> ⭐</div>
       </div>
       <div class="cards"></div>
       <div class="chips">
@@ -65,7 +71,7 @@
       </div>
     </div>
 
-    <div class="two-columns">
+    <div class="columns">
       <div id="board">
         <div id="decks">
           <div class="deck"></div>
@@ -79,10 +85,14 @@
       </div>
       <div id="players">
       </div>
+      <div class="log-wrapper">
+        <div id="log">
+        </div>
+      </div>
     </div>
 
     <footer class="controls">
-      <button id="forward" type="button">⏭</button>
+      <button id="btn-forward" type="button">⏭</button>
 
       <form id="file-loader">
         <label for="file-field">Alege o partidă:</label>

@@ -1,9 +1,10 @@
 $(function() {
 
-  let ui = null;
+  let viewer = null;
   let cardBackStub = $('#card-back-stub').detach().removeAttr('id');
   let cardFrontStub = $('#card-front-stub').detach().removeAttr('id');
   let chipStackStub = $('#chip-stack-stub').detach().removeAttr('id');
+  let kibitzStub = $('#kibitz-stub').detach().removeAttr('id');
   let minicardStub = $('#minicard-stub').detach().removeAttr('id');
   let nobleStub = $('#noble-stub').detach().removeAttr('id');
   let playerStub = $('#player-stub').detach().removeAttr('id');
@@ -58,17 +59,30 @@ $(function() {
       }
       this.nobles = data.nobles;
     }
+
+    findCard(id) {
+      for (let d = 0; d < this.decks.length; d++) {
+        for (let c = 0; c < this.decks[d].faceUp.length; c++) {
+          if (this.decks[d].faceUp[c].id == id) {
+            return { deck: d, col: c };
+          }
+        }
+      }
+      return null;
+    }
   }
 
   class Player {
     name;
     chips;
     cards;
+    score;
 
     constructor(name) {
       this.name = name;
       this.chips = Array(NUM_COLORS + 1).fill(0);
       this.cards = Array(NUM_COLORS).fill(0);
+      this.score = 0;
     }
   }
 
@@ -132,6 +146,10 @@ $(function() {
       return this.getPlayer(id).find('.chips .chip').eq(col);
     }
 
+    getPlayerScore(id) {
+      return this.getPlayer(id).find('.score');
+    }
+
     getCardFrontImg(id) {
       let fmt = id.toString().padStart(2, '0');
       return `url(img/card-front-${fmt}.webp)`;
@@ -188,6 +206,7 @@ $(function() {
       if (points) {
         div.find('.points').css('background-image', this.getDigitImg(points));
       }
+      div.find('.id').text('#' + id);
       this.createCardCosts(div.find('.costs'), costs);
       return div;
     }
@@ -202,16 +221,16 @@ $(function() {
     }
 
     createDecks() {
-      for (let row = 1; row <= NUM_LEVELS; row++) {
-        let deck = NUM_LEVELS - row;
-        let div = this.getDeck(row - 1);
+      for (let row = 0; row < NUM_LEVELS; row++) {
+        let deck = NUM_LEVELS - 1 - row;
+        let div = this.getDeck(row);
         div.empty();
         let back = cardBackStub.clone();
-        back.addClass(`card-back-${row}`);
+        back.addClass(`card-back-${deck+1}`);
         div.append(back);
 
         for (let c = 0; c < NUM_FACE_UP_CARDS; c++) {
-          let card = game.board.decks[deck].faceUp[c];
+          let card = this.game.board.decks[deck].faceUp[c];
           let cardDiv = this.cards[card.id].clone();
           div.append(cardDiv);
         }
@@ -234,7 +253,7 @@ $(function() {
 
     createNobles() {
       $('#nobles').empty();
-      for (const id of game.board.nobles) {
+      for (const id of this.game.board.nobles) {
         this.createNoble(id);
       }
     }
@@ -274,7 +293,6 @@ $(function() {
     updatePlayerCard(p, col) {
       let div = this.getPlayerMinicard(p, col);
       let cnt = this.game.players[p].cards[col];
-      cnt = col;
 
       let digit = this.getDigitImg(cnt);
       let bg = this.getMinicardImg(col);
@@ -287,7 +305,6 @@ $(function() {
     updatePlayerChip(p, col) {
       let div = this.getPlayerChip(p, col);
       let cnt = this.game.players[p].chips[col];
-      cnt = col;
 
       let digit = this.getDigitImg(cnt);
       let bg = this.getChipImg(col);
@@ -308,8 +325,13 @@ $(function() {
       }
     }
 
+    updatePlayerScore(p) {
+      let score = this.game.players[p].score;
+      this.getPlayerScore(p).text(score);
+    }
+
     drawCardBack(deck) {
-      let cnt = game.board.decks[deck].faceDown.length;
+      let cnt = this.game.board.decks[deck].faceDown.length;
       let div = this.getDeck(deck).find('.card-back');
       if (cnt) {
         div.css('visibility', 'visible');
@@ -320,13 +342,13 @@ $(function() {
     }
 
     drawDecks() {
-      for (let d = 0; d < game.board.decks.length; d++) {
+      for (let d = 0; d < this.game.board.decks.length; d++) {
         this.drawCardBack(d);
       }
     }
 
     drawChipStack(col) {
-      let cnt = game.board.chips[col];
+      let cnt = this.game.board.chips[col];
       let s = this.getChipStack(col);
       s.find('.counter').text(cnt);
       s.find('.chip').each(function(i) {
@@ -347,20 +369,157 @@ $(function() {
       this.drawDecks();
       this.drawChips();
     }
+
+    logMessage(name, msg) {
+      let elem = kibitzStub.clone();
+      elem.find('.name').text(name);
+      elem.find('.message').text(msg);
+      $('#log').append(elem);
+    }
+
+    logKibitz(playerId, msg) {
+      let name = this.game.players[playerId].name;
+      this.logMessage(name, msg);
+    }
+  }
+
+  // Menține logica acestei clase sincronizată cu arbiter/lib/SaveGameTurn.php.
+  class Viewer {
+    game;
+    ui;
+    rounds;
+    curRound;
+    curPlayer;
+
+    constructor(data) {
+      this.game = new Game(data);
+      this.ui = new UI(this.game);
+      this.rounds = data.rounds;
+      this.curRound = 0;
+      this.curPlayer = 0;
+
+      this.ui.drawAll();
+    }
+
+    isOver() {
+      return (this.curRound == this.rounds.length);
+    }
+
+    getCurPlayer() {
+      return this.game.players[this.curPlayer];
+    }
+
+    logKibitzes(kibitzes) {
+      for (const k of kibitzes) {
+        this.ui.logKibitz(this.curPlayer, k);
+      }
+    }
+
+    logArbiterMessage(msg) {
+      if (msg) {
+        this.ui.logMessage('Arbitru', msg);
+      }
+    }
+
+    modifyBoardChips(color, delta) {
+      this.game.board.chips[color] += delta;
+      this.ui.drawChipStack(color);
+    }
+
+    modifyPlayerChips(color, delta) {
+      this.getCurPlayer().chips[color] += delta;
+      this.ui.updatePlayerChip(this.curPlayer, color);
+    }
+
+    gainPoints(delta) {
+      this.getCurPlayer().score += delta;
+      this.ui.updatePlayerScore(this.curPlayer);
+    }
+
+    gainCardCount(color) {
+      this.getCurPlayer().cards[color]++;
+      this.ui.updatePlayerCard(this.curPlayer, color);
+    }
+
+    gainCardFromReserve() {
+    }
+
+    gainCardFromBoard(id) {
+      let pos = this.game.board.findCard(id);
+      let row = NUM_COLORS - 1 - pos;
+      /* todo: continue replacing the card */
+    }
+
+    gainCard(id) {
+      let card = new Card(id);
+      this.gainPoints(card.points);
+      this.gainCardCount(card.color);
+
+      if (false) { /* todo: find in reserve */
+        this.gainCardFromReserve(id);
+      } else {
+        this.gainCardFromBoard(id);
+      }
+    }
+
+    actionTake(qty) {
+      for (let c = 0; c < NUM_COLORS; c++) {
+        this.modifyBoardChips(c, -qty[c]);
+        this.modifyPlayerChips(c, +qty[c]);
+      }
+    }
+
+    actionBuy(id, cost) {
+      for (let c = 0; c <= NUM_COLORS; c++) {
+        this.modifyBoardChips(c, +cost[c]);
+        this.modifyPlayerChips(c, -cost[c]);
+      }
+      this.gainCard(id);
+    }
+
+    executeAction(tokens) {
+      let type = tokens.shift();
+      switch (type) {
+        case 1:
+        case 2:
+          this.actionTake(tokens);
+          break;
+        case 4:
+          let id = tokens.shift();
+          this.actionBuy(id, tokens);
+          break;
+      }
+    }
+
+    moveForward() {
+      if (this.isOver()) {
+        return;
+      }
+
+      let move = this.rounds[this.curRound][this.curPlayer];
+      this.logKibitzes(move.kibitzes);
+      this.logArbiterMessage(move.arbiterMsg);
+      this.executeAction(move.tokens);
+
+      if (++this.curPlayer == this.game.players.length) {
+        this.curRound++;
+        this.curPlayer = 0;
+      }
+    }
   }
 
   init();
 
   function init() {
     $('#file-field').on('change', fileUploaded);
+    $('#btn-forward').on('click', moveForward);
+    $(document).on('keydown', keyHandler);
     loadGameFile(SAMPLE_GAME);
   }
 
   function loadGameFile(json) {
     let data = JSON.parse(json);
-    game = new Game(data);
-    ui = new UI(game);
-    ui.drawAll();
+    viewer = new Viewer(data);
   }
 
   // Vezi https://stackoverflow.com/a/39515846/6022817.
@@ -378,6 +537,22 @@ $(function() {
 
     reader.onload = on_reader_load();
     reader.readAsText(fl_file);
+  }
+
+  function keyHandler(e) {
+    let captured = true;
+    switch (e.which) {
+      case 39: moveForward(); break;     // right arrow
+      default: captured = false;
+    }
+    if (captured) {
+      // let other keys work as expected (enter, tab etc.)
+      e.preventDefault();
+    }
+  }
+
+  function moveForward() {
+    viewer.moveForward();
   }
 
 });

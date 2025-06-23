@@ -22,12 +22,13 @@ body {
   margin: 0;
 }
 
-.two-columns {
+.columns {
+  margin: 30px 0px;
   display: flex;
 }
 
 div#board {
-  padding: 30px;
+  margin: 0px 30px;
   width: 700px;
 }
 
@@ -115,6 +116,16 @@ div.card-back-3 {
   min-width: var(--card-cost-size);
 }
 
+.card-front .id {
+  background: rgba(0, 0, 0, 0.3);
+  bottom: 3px;
+  color: white;
+  font-size: 10px;
+  padding: 2px;
+  position: absolute;
+  right: 3px;
+}
+
 #chips {
   display: flex;
   gap: 20px;
@@ -196,7 +207,7 @@ div.chip-stack .counter {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  padding: 30px;
+  margin: 0px 30px;
 }
 
 .player {
@@ -239,12 +250,36 @@ div.chip-stack .counter {
   min-width: var(--player-chip-width);
 }
 
+.log-wrapper {
+  background: #222;
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0px 30px;
+  overflow-y: auto;
+  width: 400px;
+}
+
+.log-message .name {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+#log {
+}
+
+.log-message {
+  border-bottom: 1px solid #444;
+  padding: 5px;
+}
+
 .controls {
   display: flex;
   justify-content: space-evenly;
 }
 
-#forward {
+#btn-forward {
   font-size: 30px;
   height: 40px;
   width: 100px;
