@@ -213,25 +213,21 @@ class Game {
   private function reserveCard(array &$action): void {
     $id = array_shift($action);
     $pl = $this->players[$this->curPlayer];
+    $this->saveGameTurn->addReserveCardTokens($id);
 
     if ($id < 0) {
       $id = $this->board->drawCard(-$id);
-      $hidden = true;
+      $pl->gainReserve($id, true);
     } else {
       $this->board->removeCard($id);
-      $hidden = false;
+      $pl->gainReserve($id, false);
     }
 
-    $pl->gainReserve($id, $hidden);
-
     $gold = Config::NUM_COLORS;
-    $gainGold = $this->board->chips[$gold];
-    if ($gainGold) {
+    if ($this->board->chips[$gold]) {
       $this->board->chips[$gold]--;
       $pl->chips[$gold]++;
     }
-
-    $this->saveGameTurn->addReserveCardTokens($id, $hidden, $gainGold);
   }
 
   // Returnează ID-ul nobilului primit sau 0 dacă jucătorul nu primește niciun
@@ -295,8 +291,8 @@ class Game {
         $this->validateAction($output->tokens);
         $this->executeAction($output->tokens);
       } catch (SplendorException $e) {
-        $msg = sprintf('Jucătorul %d zice pas din cauza erorii: %s',
-                       $this->curPlayer, $e->getMessage());
+        $pl = $this->players[$this->curPlayer];
+        $msg = sprintf('Sar peste %s: %s', $pl->name, $e->getMessage());
         Log::warn($msg);
         $this->saveGameTurn->addTakeChipsTokens([], 0);
         $this->saveGameTurn->arbiterMsg = $msg;

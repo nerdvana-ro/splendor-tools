@@ -27,10 +27,8 @@ class SaveGameTurn {
     $this->tokens = array_merge([ $action ], $chips);
   }
 
-  function addReserveCardTokens(int $id, bool $hidden, bool $gainGold): void {
-    $this->tokens = [
-      Game::ACTION_RESERVE, $hidden, $gainGold,
-    ];
+  function addReserveCardTokens(int $id): void {
+    $this->tokens = [ Game::ACTION_RESERVE, $id ];
   }
 
   function addBuyCardTokens(int $id, int $nobleId, array $chips): void {

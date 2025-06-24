@@ -69,7 +69,8 @@ $(function() {
     findCard(id) {
       for (let r = 0; r < this.decks.length; r++) {
         for (let c = 0; c < this.decks[r].faceUp.length; c++) {
-          if (this.decks[r].faceUp[c].id == id) {
+          let card = this.decks[r].faceUp[c];
+          if (card && (card.id == id)) {
             return { row: r, col: c };
           }
         }
@@ -82,13 +83,30 @@ $(function() {
     name;
     chips;
     cards;
+    reserve;
     score;
 
     constructor(name) {
       this.name = name;
       this.chips = Array(NUM_COLORS + 1).fill(0);
       this.cards = Array(NUM_COLORS).fill(0);
+      this.reserve = [];
       this.score = 0;
+    }
+
+    reserveCard(id) {
+      this.reserve.push(id);
+    }
+
+    // Returnează poziția pe care a găsit cartea sau null dacă nu a găsit-o.
+    findAndDeleteReservedCard(id) {
+      let pos = this.reserve.indexOf(id);
+      if (pos == -1) {
+        return null;
+      } else {
+        this.reserve.splice(pos, 1);
+        return pos;
+      }
     }
   }
 
@@ -294,6 +312,17 @@ $(function() {
       container.append(div);
     }
 
+    addPlayerReserve(playerId, cardId) {
+      let container = this.getPlayer(playerId).find('.reserve');
+      let div = this.cards[cardId].clone();
+      container.append(div);
+    }
+
+    deletePlayerReserve(playerId, pos) {
+      let container = this.getPlayer(playerId).find('.reserve');
+      container.find('.card').eq(pos).remove();
+    }
+
     createPlayerCards(elem) {
       for (let col = 0; col < NUM_COLORS; col++) {
         elem.append(minicardStub.clone());
@@ -488,10 +517,11 @@ $(function() {
       this.ui.updatePlayerCard(this.curPlayer, color);
     }
 
-    gainCardFromReserve() {
+    deletePlayerReserve(pos) {
+      this.ui.deletePlayerReserve(this.curPlayer, pos);
     }
 
-    gainCardFromBoard(id) {
+    replaceCardFromBoard(id) {
       let pos = this.game.board.findCard(id);
       this.game.replaceCard(pos.row, pos.col);
       this.ui.updateCard(pos.row, pos.col);
@@ -503,10 +533,11 @@ $(function() {
       this.gainPoints(card.points);
       this.gainCardCount(card.color);
 
-      if (false) { /* todo: find in reserve */
-        this.gainCardFromReserve(id);
+      let pos = this.getCurPlayer().findAndDeleteReservedCard(id);
+      if (pos == null) {
+        this.replaceCardFromBoard(id);
       } else {
-        this.gainCardFromBoard(id);
+        this.deletePlayerReserve(pos);
       }
     }
 
@@ -514,6 +545,21 @@ $(function() {
       for (let c = 0; c < NUM_COLORS; c++) {
         this.modifyBoardChips(c, -qty[c]);
         this.modifyPlayerChips(c, +qty[c]);
+      }
+    }
+
+    actionReserve(id) {
+      if (id > 0) {
+        this.replaceCardFromBoard(id);
+      } else {
+        let row = -id - 1;
+      }
+
+      this.getCurPlayer().reserveCard(id);
+      this.ui.addPlayerReserve(this.curPlayer, id);
+      if (this.game.board.chips[NUM_COLORS]) {
+        this.modifyBoardChips(NUM_COLORS, -1);
+        this.modifyPlayerChips(NUM_COLORS, +1);
       }
     }
 
@@ -540,6 +586,9 @@ $(function() {
         case 1:
         case 2:
           this.actionTake(tokens);
+          break;
+        case 3:
+          this.actionReserve(tokens.shift());
           break;
         case 4:
           let id = tokens.shift();

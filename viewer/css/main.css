@@ -74,7 +74,7 @@ div.card-back-3 {
   position: relative;
 }
 
-.card-front .header {
+.card-front > .header {
   background-size: 100%;
   border-radius: 10px;
   position: absolute;
@@ -218,11 +218,19 @@ div.chip-stack .counter {
   width: var(--minicard-width);
 }
 
-#players {
+.column-right {
   display: flex;
   flex-direction: column;
+  height: 850px; /* TODO fă-o egală cu stînga, mai elegant */
+}
+
+#players {
+  display: flex;
+  flex-wrap: wrap;
   gap: 30px;
-  margin: 0px 30px;
+  margin-bottom: 30px;
+  margin-left: 30px;
+  width: 500px;
 }
 
 .player {
@@ -230,11 +238,11 @@ div.chip-stack .counter {
   border-radius: 5px;
   box-shadow: 5px 5px 3px #222;
   color: white;
-  height: 200px;
+  height: 235px;
   width: 220px;
 }
 
-.player .header {
+.player > .header {
   border-radius: 5px 5px 0 0;
   border-bottom: 1px solid #222;
   display: flex;
@@ -251,6 +259,14 @@ div.chip-stack .counter {
   margin-left: 10px;
 }
 
+.player .cards {
+  margin-bottom: 5px;
+}
+
+.player .chips {
+  margin-bottom: 10px;
+}
+
 .player .minicard {
   background-size: 100%;
   height: calc(var(--minicard-width) / var(--minicard-img-width) * var(--minicard-img-height));
@@ -265,13 +281,18 @@ div.chip-stack .counter {
   min-width: var(--player-chip-width);
 }
 
-.player .nobles {
+.player .nobles, .player .reserve {
   display: flex;
   gap: 10px;
-  margin-left: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .player .nobles .noble {
+  zoom: 0.33;
+}
+
+.player .reserve .card {
   zoom: 0.33;
 }
 
@@ -280,19 +301,19 @@ div.chip-stack .counter {
   border-radius: 5px;
   color: white;
   display: flex;
+  flex: 1; /* umple restul coloanei drepte */
   flex-direction: column-reverse;
-  height: 800px;
   margin: 0px 30px;
   overflow-y: auto;
-  width: 400px;
+  width: 470px;
+}
+
+#log {
 }
 
 .log-message .name {
   font-weight: bold;
   margin-right: 10px;
-}
-
-#log {
 }
 
 .log-message {
