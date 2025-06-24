@@ -4,10 +4,10 @@ class ReservedCard {
   public int $id;
   // Cărțile trase din pachet sînt ascunse, dar culoarea pachetului este
   // vizibilă.
-  public bool $hidden;
+  public bool $secret;
 
-  function __construct(int $id, bool $hidden) {
+  function __construct(int $id, bool $secret) {
     $this->id = $id;
-    $this->hidden = $hidden;
+    $this->secret = $secret;
   }
 }

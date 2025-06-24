@@ -43,8 +43,8 @@ class Player {
     return false;
   }
 
-  function gainReserve(int $cardId, bool $hidden): void {
-    $this->reserve[] = new ReservedCard($cardId, $hidden);
+  function gainReserve(int $cardId, bool $secret): void {
+    $this->reserve[] = new ReservedCard($cardId, $secret);
   }
 
   // $cardId nu este neapărat în rezervă. Dacă este, șterge-l.
@@ -135,7 +135,7 @@ class Player {
   function getReserveAsInputFile(bool $reveal): string {
     $arr = [];
     foreach ($this->reserve as $r) {
-      if ($reveal || !$r->hidden) {
+      if ($reveal || !$r->secret) {
         $arr[] = $r->id;
       } else {
         $arr[] = -Card::get($r->id)->level;
