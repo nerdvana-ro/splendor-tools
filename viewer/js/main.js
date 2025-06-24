@@ -42,9 +42,13 @@ $(function() {
       }
     }
 
+    drawCard() {
+      return this.faceDown.shift();
+    }
+
     replaceCard(col) {
       this.faceUp[col] = this.faceDown.length
-        ? this.faceDown.shift()
+        ? this.drawCard()
         : null;
     }
   }
@@ -312,9 +316,12 @@ $(function() {
       container.append(div);
     }
 
-    addPlayerReserve(playerId, cardId) {
+    addPlayerReserve(playerId, cardId, secret) {
       let container = this.getPlayer(playerId).find('.reserve');
       let div = this.cards[cardId].clone();
+      if (secret) {
+        div.addClass('secret');
+      }
       container.append(div);
     }
 
@@ -549,14 +556,18 @@ $(function() {
     }
 
     actionReserve(id) {
+      let secret = false;
       if (id > 0) {
         this.replaceCardFromBoard(id);
       } else {
         let row = -id - 1;
+        let card = this.game.board.decks[row].drawCard();
+        id = card.id;
+        secret = true;
       }
 
       this.getCurPlayer().reserveCard(id);
-      this.ui.addPlayerReserve(this.curPlayer, id);
+      this.ui.addPlayerReserve(this.curPlayer, id, secret);
       if (this.game.board.chips[NUM_COLORS]) {
         this.modifyBoardChips(NUM_COLORS, -1);
         this.modifyPlayerChips(NUM_COLORS, +1);

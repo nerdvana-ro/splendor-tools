@@ -131,6 +131,10 @@ div.card-back-3 {
   right: 3px;
 }
 
+.card.secret {
+  filter: brightness(30%);
+}
+
 #chips {
   display: flex;
   gap: 20px;
