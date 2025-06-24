@@ -409,13 +409,13 @@ $(function() {
       }
     }
 
-    drawDecks() {
+    paintDecks() {
       for (let d = 0; d < this.game.board.decks.length; d++) {
         this.updateCardBack(d);
       }
     }
 
-    drawChipStack(col) {
+    paintChipStack(col) {
       let cnt = this.game.board.chips[col];
       let s = this.getChipStack(col);
       s.find('.counter').text(cnt);
@@ -427,15 +427,15 @@ $(function() {
       });
     }
 
-    drawChips() {
+    paintChips() {
       for (let col = 0; col <= NUM_COLORS; col++) {
-        this.drawChipStack(col);
+        this.paintChipStack(col);
       }
     }
 
-    drawAll() {
-      this.drawDecks();
-      this.drawChips();
+    paintAll() {
+      this.paintDecks();
+      this.paintChips();
     }
 
     logMessage(name, msg) {
@@ -466,7 +466,7 @@ $(function() {
       this.curRound = 0;
       this.curPlayer = 0;
 
-      this.ui.drawAll();
+      this.ui.paintAll();
       this.updateRound();
     }
 
@@ -499,7 +499,7 @@ $(function() {
 
     modifyBoardChips(color, delta) {
       this.game.board.chips[color] += delta;
-      this.ui.drawChipStack(color);
+      this.ui.paintChipStack(color);
     }
 
     modifyPlayerChips(color, delta) {
