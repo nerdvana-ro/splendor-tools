@@ -635,6 +635,7 @@ $(function() {
         let card = this.game.board.decks[row].drawCard();
         id = card.id;
         secret = true;
+        this.ui.updateCardBack(row);
         this.animateCardBack(row);
       }
 
