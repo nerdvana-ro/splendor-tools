@@ -78,14 +78,7 @@ class Board {
     Log::info("======== Nobili:");
     foreach ($this->nobles as $id) {
       $noble = Noble::get($id);
-      $str = '';
-      for ($col = 0; $col < Config::NUM_COLORS; $col++) {
-        if ($noble->cost[$col]) {
-          $str .= Str::block($col, $noble->cost[$col]);
-          $str .= ' ';
-        }
-      }
-      Log::info("    [#%02d] %s", [ $id, $str ]);
+      $noble->print();
     }
   }
 

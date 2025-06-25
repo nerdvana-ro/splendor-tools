@@ -283,6 +283,7 @@ class Game {
 
   private function playRound(): void {
     foreach ($this->players as $id => $p) {
+      $this->print();
       $this->saveGameTurn = new SaveGameTurn();
       $state = $this->asInputFile();
       try {
@@ -297,7 +298,6 @@ class Game {
         $this->saveGameTurn->addTakeChipsTokens([], 0);
         $this->saveGameTurn->arbiterMsg = $msg;
       }
-      $this->print();
       $this->curPlayer = ($this->curPlayer + 1) % $this->n;
       $this->saveGame->addTurn($this->saveGameTurn);
     }
@@ -316,11 +316,11 @@ class Game {
   }
 
   function run(): void {
-    $this->print();
     do {
       $this->playRound();
       $this->roundNo++;
     } while (!$this->isOver());
+    $this->print();
   }
 
   function save(string $saveGameFile): void {
@@ -341,8 +341,12 @@ class Game {
 
   function print(): void {
     $pname = $this->players[$this->curPlayer]->name;
-    Log::info('================ Runda %d, jucător %d (%s)',
-              [ $this->roundNo, $this->curPlayer, $pname]);
+    if ($this->isOver()) {
+      Log::info('================ Final (%d runde)', [ $this->roundNo ]);
+    } else {
+      Log::info('================ Runda %d, jucător %d (%s)',
+                [ 1 + $this->roundNo, 1 + $this->curPlayer, $pname]);
+    }
     $this->board->print();
     foreach ($this->players as $id => $player) {
       $player->print($id);

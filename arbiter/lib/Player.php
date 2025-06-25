@@ -162,5 +162,12 @@ class Player {
         $card->print();
       }
     }
+    if (count($this->nobles)) {
+      Log::info('    Nobili:');
+      foreach ($this->nobles as $id) {
+        $noble = Noble::get($id);
+        $noble->print();
+      }
+    }
   }
 }
