@@ -1,4 +1,4 @@
-#/usr/bin/sh
+#!/usr/bin/bash
 
 # Creează un subset al fontului Material Symbols, doar cu simbolurile dorite.
 SRC=~/Desktop/MaterialSymbolsRounded_Filled-Regular.ttf

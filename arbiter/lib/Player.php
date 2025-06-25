@@ -11,7 +11,7 @@ class Player {
   public array $nobles;
 
   function __construct(string $binary, string $name) {
-    $this->binary = ($binary == 'human') ? $binary : realpath($binary);
+    $this->binary = $binary;
     $this->name = $name;
     Log::info('Am adăugat jucătorul %s cu binarul %s.', [ $name, $binary ]);
 

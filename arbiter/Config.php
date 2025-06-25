@@ -17,6 +17,10 @@ class Config {
   // Limită hard pentru cazul în care agenții intră în buclă.
   const MAX_ROUNDS = 100;
 
+  // Numele fișierelor salvate în directorul indicat de --save. Vom înlocui cu
+  // sprintf() numărul partidei.
+  const SAVE_GAME_FILE = 'game-%03d.json';
+
   /**
    * Constante specifice jocului Splendor.
    **/

@@ -14,28 +14,16 @@ class Game {
   private SaveGame $saveGame;
   private SaveGameTurn $saveGameTurn;
 
-  function __construct(Args $args) {
-    $this->initRng($args->getSeed());
-
-    $this->n = $args->getNumPlayers();
-    for ($i = 0; $i < $this->n; $i++) {
-      list($binary, $name) = $args->getPlayer($i);
-      $this->players[] = new Player($binary, $name);
+  function __construct(array $playerInfo) {
+    $this->n = count($playerInfo);
+    foreach ($playerInfo as $rec) {
+      $this->players[] = new Player($rec['binary'], $rec['name']);
     }
 
     $this->board = new Board($this->n);
     $this->curPlayer = 0;
     $this->roundNo = 0;
     $this->saveGame = new SaveGame($this->players, $this->board);
-  }
-
-  private function initRng(int $seed): void {
-    if (!$seed) {
-      $micros = microtime(true);
-      $seed = $micros * 1_000_000 % 1_000_000_000;
-    }
-    Log::info('Inițializez RNG cu seed-ul %d.', [ $seed ]);
-    srand($seed);
   }
 
   private function shiftAndCheck(array &$v, int $lo, int $hi): int {
@@ -323,9 +311,40 @@ class Game {
     $this->print();
   }
 
-  function save(string $saveGameFile): void {
+  function getResults(): array {
+    $results = [];
+
+    foreach ($this->players as $id => $p) {
+      $results[] = [
+        'id' => $id,
+        'winner' => false,
+        'score' => $p->getScore(),
+        'cards' => count($p->cards),
+      ];
+    }
+
+    usort($results, function($a, $b) {
+      if ($a['score'] != $b['score']) {
+        return $b['score'] - $a['score'];
+      }
+      return $a['cards'] - $b['cards'];
+    });
+
+    if ($results[0]['score'] >= Config::ENDGAME_SCORE) {
+      foreach ($results as &$rec) {
+        if (($rec['score'] == $results[0]['score']) &&
+            ($rec['cards'] == $results[0]['cards'])) {
+          $rec['winner'] = true;
+        }
+      }
+    }
+
+    return $results;
+  }
+
+  function save(string $fileName): void {
     $json = $this->saveGame->asJson() . "\n";
-    file_put_contents($saveGameFile, $json);
+    file_put_contents($fileName, $json);
   }
 
   function asInputFile(): string {

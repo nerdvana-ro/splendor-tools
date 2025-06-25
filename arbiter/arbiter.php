@@ -18,13 +18,9 @@ function main(): void {
     $args->parse();
     Card::loadCsv(__DIR__ . '/../cards.csv');
     Noble::loadCsv(__DIR__ . '/../nobles.csv');
-    $game = new Game($args);
-    $game->run();
 
-    $saveGameFile = $args->getSaveGameFile();
-    if ($saveGameFile) {
-      $game->save($saveGameFile);
-    }
+    $t = new Tournament($args);
+    $t->run();
   } catch (SplendorException $e) {
     Log::fatal($e->getMessage());
   }
