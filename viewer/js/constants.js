@@ -123,7 +123,3 @@ const NOBLES = [
   [ 3, 0, 0, 3, 3 ],
   [ 3, 3, 0, 0, 3 ],
 ];
-
-const SAMPLE_GAME = `
-{"players":["player1","player2"],"decks":[[13,20,21,19,18,9,25,4,32,5,39,3,22,10,28,16,12,17,34,8,29,14,2,24,37,30,7,26,35,6,38,15,23,1,11,36,40,31,33,27],[63,44,50,57,48,67,56,59,42,66,52,64,69,49,68,70,62,65,45,51,43,61,54,46,53,60,58,41,55,47],[80,87,77,81,72,88,75,86,82,85,79,71,73,78,74,89,90,83,84,76]],"nobles":[6,10,4],"rounds":[[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,13],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,9],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,4],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,1,1,0,0],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[2,0,0,0,2,0],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,18,0,0,1,0,0,0,3],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,20,0,0,0,0,2,0,2],"returns":[],"kibitzes":[],"arbiterMsg":""}]]}
-`;

@@ -712,12 +712,14 @@ $(function() {
     $('#file-field').on('change', fileUploaded);
     $('#btn-forward').on('click', moveForward);
     $(document).on('keydown', keyHandler);
-    loadGameFile(SAMPLE_GAME);
   }
 
   function loadGameFile(json) {
     let data = JSON.parse(json);
     viewer = new Viewer(data);
+    $('.round-info').css('visibility', 'visible');
+    $('#btn-forward').css('visibility', 'visible');
+    $('.columns').css('visibility', 'visible');
   }
 
   // Vezi https://stackoverflow.com/a/39515846/6022817.
