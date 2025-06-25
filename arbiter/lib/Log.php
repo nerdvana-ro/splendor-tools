@@ -39,7 +39,7 @@ class Log {
     if (Config::LOG_LEVEL >= $level) {
       $spaces = str_repeat(' ', 4 * $indent);
       $str = vsprintf($msg, $args);
-      printf("%s%s%s%s\n", $spaces, $color, $str, AnsiColors::DEFAULT);
+      fprintf(STDERR, "%s%s%s%s\n", $spaces, $color, $str, AnsiColors::DEFAULT);
     }
   }
 }
