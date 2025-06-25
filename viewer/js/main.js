@@ -3,6 +3,7 @@ $(function() {
   let viewer = null;
   let cardBackStub = $('#card-back-stub').detach().removeAttr('id');
   let cardFrontStub = $('#card-front-stub').detach().removeAttr('id');
+  let chipStub = $('#chip-stub').detach().removeAttr('id');
   let chipStackStub = $('#chip-stack-stub').detach().removeAttr('id');
   let kibitzStub = $('#kibitz-stub').detach().removeAttr('id');
   let minicardStub = $('#minicard-stub').detach().removeAttr('id');
@@ -142,7 +143,7 @@ $(function() {
       this.createCards();
       this.createNobles();
       this.createDecks();
-      this.createChips();
+      this.createChipStacks();
       this.createPlayers();
       this.updatePlayerCardsAndChips();
       this.updateNobles();
@@ -162,6 +163,10 @@ $(function() {
 
     getChipStack(col) {
       return $('#chips').find('.chip-stack').eq(col);
+    }
+
+    getNoble(id) {
+      return $(`#nobles .noble[data-id=${id}]`);
     }
 
     getPlayer(id) {
@@ -207,6 +212,12 @@ $(function() {
 
     getNobleImg(id) {
       return `url(img/noble-${id}.webp)`;
+    }
+
+    cloneChip(color) {
+      let elem = chipStub.clone();
+      elem.css('background-image', this.getChipImg(color));
+      return elem;
     }
 
     createCardCosts(elem, costs) {
@@ -266,16 +277,18 @@ $(function() {
       }
     }
 
-    createChips() {
+    createChipStacks() {
       $('#chips').empty();
-      let self = this;
       for (let col = 0; col <= NUM_COLORS; col++) {
         let s = chipStackStub.clone();
-        s.find('.chip').each(function(i) {
-          $(this).css('background-image', self.getChipImg(col));
-          $(this).css('bottom', CHIP_STACK_HEIGHT * i);
-          $(this).css('z-index', i);
-        });
+        for (let i = 0; i < MAX_CHIPS_PER_STACK; i++) {
+          let div = this.cloneChip(col);
+          div.css({
+            'bottom': CHIP_HEIGHT * i,
+            'z-index': i,
+          });
+          div.appendTo(s);
+        }
         s.appendTo('#chips');
       }
     }
@@ -307,7 +320,7 @@ $(function() {
     }
 
     deleteBoardNoble(id) {
-      $(`#nobles .noble[data-id=${id}]`).remove();
+      this.getNoble(id).remove();
     }
 
     addPlayerNoble(playerId, nobleId) {
@@ -504,14 +517,68 @@ $(function() {
       }
     }
 
-    modifyBoardChips(color, delta) {
-      this.game.board.chips[color] += delta;
-      this.ui.paintChipStack(color);
+    animate(obj, src, dest) {
+      obj.addClass('animated');
+      obj.css('position', 'absolute');
+      obj.css(src.offset());
+      obj.appendTo('body');
+
+      obj.animate(dest.offset(), {
+        done: function() {
+          obj.remove();
+        },
+      });
     }
 
-    modifyPlayerChips(color, delta) {
-      this.getCurPlayer().chips[color] += delta;
+    animateChips(color, qty) {
+      if (qty) {
+        let elem = this.ui.cloneChip(color);
+        let src = this.ui.getChipStack(color);
+        let dest = this.ui.getPlayerChip(this.curPlayer, color);
+        if (qty < 0) {
+          [src, dest] = [dest, src];
+        }
+        this.animate(elem, src, dest);
+      }
+    }
+
+    animateFaceupCard(row, col) {
+      let src = this.ui.getCardDiv(row, col);
+      let elem = src.clone();
+      let dest = this.ui.getPlayer(this.curPlayer).find('.reserve');
+      this.animate(elem, src, dest);
+    }
+
+    animateCardBack(row) {
+      let src = this.ui.getDeck(row).find('.card-back');
+      let elem = src.clone();
+      let dest = this.ui.getPlayer(this.curPlayer).find('.reserve');
+      this.animate(elem, src, dest);
+    }
+
+    animateReservedCard(id) {
+      let elem = this.ui.cards[id].clone();
+      let src = this.ui.getPlayer(this.curPlayer).find('.reserve');
+      let dest = this.ui.getPlayer(this.curPlayer);
+      this.animate(elem, src, dest);
+    }
+
+    animateNoble(id) {
+      let src = this.ui.getNoble(id);
+      let elem = src.clone();
+      let dest = this.ui.getPlayer(this.curPlayer).find('.nobles');
+      this.animate(elem, src, dest);
+    }
+
+    // Transferă qty jetoane de culoarea color de pe masă la jucător. Dacă
+    // valoarea este pozitivă, jucătorul ia jetoane. Dacă valoarea este
+    // negativă, jucătorul plătește jetoane.
+    transferChips(color, qty) {
+      this.game.board.chips[color] -= qty;
+      this.getCurPlayer().chips[color] += qty;
+      this.ui.paintChipStack(color);
       this.ui.updatePlayerChip(this.curPlayer, color);
+      this.animateChips(color, qty);
     }
 
     gainPoints(delta) {
@@ -530,6 +597,7 @@ $(function() {
 
     replaceCardFromBoard(id) {
       let pos = this.game.board.findCard(id);
+      this.animateFaceupCard(pos.row, pos.col);
       this.game.replaceCard(pos.row, pos.col);
       this.ui.updateCard(pos.row, pos.col);
       this.ui.updateCardBack(pos.row);
@@ -545,13 +613,13 @@ $(function() {
         this.replaceCardFromBoard(id);
       } else {
         this.deletePlayerReserve(pos);
+        this.animateReservedCard(id);
       }
     }
 
     actionTake(qty) {
       for (let c = 0; c < NUM_COLORS; c++) {
-        this.modifyBoardChips(c, -qty[c]);
-        this.modifyPlayerChips(c, +qty[c]);
+        this.transferChips(c, qty[c]);
       }
     }
 
@@ -564,17 +632,18 @@ $(function() {
         let card = this.game.board.decks[row].drawCard();
         id = card.id;
         secret = true;
+        this.animateCardBack(row);
       }
 
       this.getCurPlayer().reserveCard(id);
       this.ui.addPlayerReserve(this.curPlayer, id, secret);
       if (this.game.board.chips[NUM_COLORS]) {
-        this.modifyBoardChips(NUM_COLORS, -1);
-        this.modifyPlayerChips(NUM_COLORS, +1);
+        this.transferChips(NUM_COLORS, 1);
       }
     }
 
     gainNoble(id) {
+      this.animateNoble(id);
       this.ui.deleteBoardNoble(id);
       this.ui.addPlayerNoble(this.curPlayer, id);
       this.gainPoints(NOBLE_POINTS);
@@ -582,8 +651,7 @@ $(function() {
 
     actionBuy(id, nobleId, cost) {
       for (let c = 0; c <= NUM_COLORS; c++) {
-        this.modifyBoardChips(c, +cost[c]);
-        this.modifyPlayerChips(c, -cost[c]);
+        this.transferChips(c, -cost[c]);
       }
       this.gainCard(id);
       if (nobleId) {
@@ -611,8 +679,7 @@ $(function() {
 
     returnChips(colors) {
       for (const c of colors) {
-        this.modifyBoardChips(c, +1);
-        this.modifyPlayerChips(c, -1);
+        this.transferChips(c, -1);
       }
     }
 

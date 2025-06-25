@@ -1,5 +1,6 @@
 // Constante referitoare la interfață
-const CHIP_STACK_HEIGHT = 7;
+const CHIP_HEIGHT = 7;
+const MAX_CHIPS_PER_STACK = 7;
 
 // Constante referitoare la regulile jocului.
 const NUM_COLORS = 5;
@@ -124,5 +125,5 @@ const NOBLES = [
 ];
 
 const SAMPLE_GAME = `
-{"players":["player1","player2"],"decks":[[38,33,37,31,15,16,13,7,8,34,12,40,4,20,3,26,19,35,2,9,30,18,29,17,5,22,21,24,28,32,25,14,27,11,1,36,10,6,39,23],[54,68,65,63,70,52,60,41,49,55,45,44,53,58,50,64,66,48,46,43,61,57,69,47,67,56,62,42,51,59],[79,76,72,78,74,87,90,77,85,73,88,86,89,71,75,84,82,81,83,80]],"nobles":[9,5,6],"rounds":[[{"tokens":[3,31],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,79],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,15],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,78],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,16],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,87],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,0,0,1,1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[1,1,1,1,0,0],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,31,0,0,0,0,1,1,3],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,38,0,1,1,1,0,0,2],"returns":[],"kibitzes":[],"arbiterMsg":""}]]}
+{"players":["player1","player2"],"decks":[[13,20,21,19,18,9,25,4,32,5,39,3,22,10,28,16,12,17,34,8,29,14,2,24,37,30,7,26,35,6,38,15,23,1,11,36,40,31,33,27],[63,44,50,57,48,67,56,59,42,66,52,64,69,49,68,70,62,65,45,51,43,61,54,46,53,60,58,41,55,47],[80,87,77,81,72,88,75,86,82,85,79,71,73,78,74,89,90,83,84,76]],"nobles":[6,10,4],"rounds":[[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,13],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,9],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[3,-1],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[3,4],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[1,1,1,1,0,0],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[2,0,0,0,2,0],"returns":[],"kibitzes":[],"arbiterMsg":""}],[{"tokens":[4,18,0,0,1,0,0,0,3],"returns":[],"kibitzes":[],"arbiterMsg":""},{"tokens":[4,20,0,0,0,0,2,0,2],"returns":[],"kibitzes":[],"arbiterMsg":""}]]}
 `;

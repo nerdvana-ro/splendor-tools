@@ -132,7 +132,7 @@ div.card-back-3 {
 }
 
 .card.secret {
-  filter: brightness(30%);
+  filter: brightness(50%);
 }
 
 #chips {
@@ -152,7 +152,7 @@ div.chip-stack .stack {
   height: 120px;
 }
 
-div.chip-stack .chip {
+div.chip-stack .chip, .animated.chip {
   background-size: 100%;
   height: calc(var(--chip-width) / var(--chip-img-width) * var(--chip-img-height));
   position: absolute;
