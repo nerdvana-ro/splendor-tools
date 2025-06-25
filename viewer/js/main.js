@@ -487,13 +487,16 @@ $(function() {
       this.curPlayer = 0;
 
       this.ui.paintAll();
-      this.updateRound();
+      this.updateRoundAndPlayer();
     }
 
-    updateRound() {
+    updateRoundAndPlayer() {
       if (!this.isOver()) {
         $('.controls .cur-round').text(1 + this.curRound);
         $('.controls .num-rounds').text(this.rounds.length);
+        $('.player .turn-marker').css('visibility', 'hidden');
+        let pl = this.ui.getPlayer(this.curPlayer);
+        pl.find('.turn-marker').css('visibility', 'visible');
       }
     }
 
@@ -697,8 +700,8 @@ $(function() {
       if (++this.curPlayer == this.game.players.length) {
         this.curRound++;
         this.curPlayer = 0;
-        this.updateRound();
       }
+      this.updateRoundAndPlayer();
     }
   }
 

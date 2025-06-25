@@ -18,12 +18,55 @@
 }
 
 body {
-  background: linear-gradient(90deg, rgba(26, 95, 122, 1) 0%, rgba(75, 158, 209, 1) 100%);
+  background-color: #154055;
   margin: 0;
 }
 
+header {
+  background-color: #103040;
+  padding: 5px 30px;
+  margin-bottom: 30px;
+}
+
+.controls {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 1230px;
+}
+
+.round-info {
+  color: white;
+  font-weight: bold;
+}
+
+#btn-forward {
+  width: 100px;
+  font-size: 30px;
+  height: 40px;
+}
+
+.custom-file-upload {
+  align-items: center;
+  background: #e5e5e5;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 180px;
+}
+
+.custom-file-upload .icon {
+  font-size: 30px;
+  margin-right: 5px;
+}
+
+input[type='file'] {
+  display: none;
+}
+
 .columns {
-  margin: 30px 0px;
   display: flex;
 }
 
@@ -247,13 +290,21 @@ div.chip-stack .counter {
 }
 
 .player > .header {
+  align-items: center;
+  background: #222;
   border-radius: 5px 5px 0 0;
-  border-bottom: 1px solid #222;
   display: flex;
-  justify-content: space-between;
   margin-bottom: 10px;
   padding: 10px;
-  text-align: center;
+}
+
+.player > .header .name {
+  margin-left: 10px;
+  flex: 1;
+}
+
+.player > .header .score {
+  margin-right: 3px;
 }
 
 .player .cards, .player .chips {
@@ -325,22 +376,6 @@ div.chip-stack .counter {
   padding: 5px;
 }
 
-.controls {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-#btn-forward {
-  font-size: 30px;
-  height: 40px;
-  width: 100px;
-}
-
-input[type='file'] {
-  color: transparent;
-}
-
-/* latin */
 @font-face {
   font-family: 'Courgette';
   font-style: normal;
@@ -350,6 +385,17 @@ input[type='file'] {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: 'Material Symbols';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../font/material-symbols.woff2) format('woff2');
+}
+
 .game-font {
-  font-family: "Courgette", cursive;
+  font-family: 'Courgette', cursive;
+}
+
+.icon {
+  font-family: 'Material Symbols';
 }

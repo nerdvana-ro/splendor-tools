@@ -53,8 +53,10 @@
 
     <div class="player" id="player-stub">
       <div class="header">
+        <div class="turn-marker icon">play_arrow</div>
         <div class="name"></div>
-        <div><span class="score game-font">0</span> ⭐</div>
+        <div class="score game-font">0</div>
+        <span class="icon">star</span>
       </div>
       <div class="cards"></div>
       <div class="chips">
@@ -68,6 +70,25 @@
       <div class="reserve"></div>
       <div class="nobles"></div>
     </div>
+
+    <header>
+      <div class="controls">
+        <div class="round-info">
+          Runda <span class="cur-round"></span> /
+          <span class="num-rounds"></span>
+        </div>
+
+        <button id="btn-forward" class="icon" type="button">skip_next</button>
+
+        <form id="file-loader">
+          <label for="file-field" class="custom-file-upload">
+            <span class="icon">upload</span>
+            încarcă o partidă
+          </label>
+          <input type="file" id="file-field" name="file-field">
+        </form>
+      </div>
+    </header>
 
     <div class="columns">
       <div id="board">
@@ -90,18 +111,5 @@
       </div>
     </div>
 
-    <footer class="controls">
-      <div>
-        Runda <span class="cur-round"></span> /
-        <span class="num-rounds"></span>
-      </div>
-
-      <button id="btn-forward" type="button">⏭</button>
-
-      <form id="file-loader">
-        <label for="file-field">Alege o partidă:</label>
-        <input type="file" id="file-field" name="file-field">
-      </form>
-    </footer>
   </body>
 </html>
