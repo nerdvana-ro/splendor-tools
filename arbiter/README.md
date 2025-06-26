@@ -53,7 +53,7 @@ git clone https://github.com/nerdvana-ro/splendor-tools
 cd splendor-tools
 ```
 
-Pe viitor, avînd în vedere că eu continui să lucrez la cod, poți obține ultima versiune a codului cu comanda `git pull` executată din interiorul repo-ului:
+Pe viitor, avînd în vedere că eu continui să lucrez la cod, poți obține ultima versiune a codului executînd, din interiorul directorului:
 
 ```bash
 git pull
@@ -65,7 +65,7 @@ Rulează arbitrul, fără argumente, ca să te asiguri că merge:
 php arbiter/arbiter.php
 ```
 
-Dacă merge, vei vedea un mesaj cu instrucțiuni de apelare: `Apel: arbiter/arbiter.php --binary <cale> --name <nume>` etc.
+Dacă merge, vei vedea un mesaj cu instrucțiuni de apelare.
 
 ## Compilează clientul Doofus
 
