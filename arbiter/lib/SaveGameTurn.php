@@ -6,14 +6,16 @@
  **/
 
 class SaveGameTurn {
-  public array $tokens; // un vector de întregi care codifică mutarea
-  public array $returns; // culorile jetoanelor returnate
-  public array $kibitzes; // un vector de stringuri chibițate de agent
+  public array $tokens;      // un vector de întregi care codifică mutarea
+  public array $returns;     // culorile jetoanelor returnate
+  public int $nobleId;       // nobilul primit dacă există, 0 altfel
+  public array $kibitzes;    // un vector de stringuri chibițate de agent
   public string $arbiterMsg; // un mesaj adăugat de arbitru pentru mutări incorecte
 
   function __construct() {
     $this->tokens = [];
     $this->returns = [];
+    $this->nobleId = 0;
     $this->kibitzes = [];
     $this->arbiterMsg = '';
   }
@@ -31,9 +33,9 @@ class SaveGameTurn {
     $this->tokens = [ Game::ACTION_RESERVE, $id ];
   }
 
-  function addBuyCardTokens(int $id, int $nobleId, array $chips): void {
+  function addBuyCardTokens(int $id, array $chips): void {
     $this->tokens = array_merge(
-      [ Game::ACTION_BUY, $id, $nobleId ],
+      [ Game::ACTION_BUY, $id ],
       $chips
     );
   }
@@ -42,6 +44,7 @@ class SaveGameTurn {
     return [
       'tokens' => $this->tokens,
       'returns' => $this->returns,
+      'nobleId' => $this->nobleId,
       'kibitzes' => $this->kibitzes,
       'arbiterMsg' => $this->arbiterMsg,
     ];

@@ -220,16 +220,16 @@ class Game {
 
   // Returnează ID-ul nobilului primit sau 0 dacă jucătorul nu primește niciun
   // nobil.
-  private function checkNobles(): int {
+  private function checkNobles(): void {
     $p = $this->players[$this->curPlayer];
     $id = $p->getVisitingNoble($this->board->nobles);
     if ($id) {
       $this->board->deleteNoble($id);
       $p->nobles[] = $id;
       $msg = "{$p->name} primește nobilul #{$id}.";
+      $this->saveGameTurn->nobleId = $id;
       $this->saveGameTurn->arbiterMsg = $msg;
     }
-    return $id;
   }
 
   private function buyCard(array &$action): void {
@@ -239,8 +239,7 @@ class Game {
     $this->board->gainChips($chips);
     $this->board->removeCard($id);
     $pl->gainCard($id);
-    $visitingNoble = $this->checkNobles();
-    $this->saveGameTurn->addBuyCardTokens($id, $visitingNoble, $chips);
+    $this->saveGameTurn->addBuyCardTokens($id, $chips);
   }
 
   private function returnChips(array &$action): void {
@@ -267,6 +266,7 @@ class Game {
     }
 
     $this->returnChips($action);
+    $this->checkNobles();
   }
 
   private function playRound(): void {

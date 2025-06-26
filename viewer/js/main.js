@@ -648,21 +648,20 @@ $(function() {
       }
     }
 
-    gainNoble(id) {
-      this.animateNoble(id);
-      this.ui.deleteBoardNoble(id);
-      this.ui.addPlayerNoble(this.curPlayer, id);
-      this.gainPoints(NOBLE_POINTS);
+    grantNoble(id) {
+      if (id) {
+        this.animateNoble(id);
+        this.ui.deleteBoardNoble(id);
+        this.ui.addPlayerNoble(this.curPlayer, id);
+        this.gainPoints(NOBLE_POINTS);
+      }
     }
 
-    actionBuy(id, nobleId, cost) {
+    actionBuy(id, cost) {
       for (let c = 0; c <= NUM_COLORS; c++) {
         this.transferChips(c, -cost[c]);
       }
       this.gainCard(id);
-      if (nobleId) {
-        this.gainNoble(nobleId);
-      }
     }
 
     executeAction(tokens) {
@@ -677,8 +676,7 @@ $(function() {
           break;
         case 4:
           let id = tokens.shift();
-          let nobleId = tokens.shift();
-          this.actionBuy(id, nobleId, tokens);
+          this.actionBuy(id, tokens);
           break;
       }
     }
@@ -699,6 +697,7 @@ $(function() {
       this.logArbiterMessage(move.arbiterMsg);
       this.executeAction(move.tokens);
       this.returnChips(move.returns);
+      this.grantNoble(move.nobleId);
 
       if (++this.curPlayer == this.game.players.length) {
         this.curRound++;
