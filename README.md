@@ -4,9 +4,9 @@ Acest set de unelte vă permite să creați un program (agent) pentru jocul Sple
 
 ## Agenții
 
-Agenții sînt programe care joacă Splendor. Agenții citesc starea jocului (conținutul mesei și bunurile fiecărui jucător) și răspund printr-o mutare.
+[Agenții](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent) sînt programe care joacă Splendor. Agenții citesc starea jocului (conținutul mesei și bunurile fiecărui jucător) și răspund printr-o mutare.
 
-Repoul include cîțiva agenți, dintre care Doofus joacă corect (dar modest). Restul agenților (Error, Hang etc.) se comportă anormal și au rostul de a testa buna funcționare a arbitrului.
+Repoul include cîțiva agenți, dintre care [Doofus](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent/doofus) joacă corect (dar modest). Restul agenților (Error, Hang etc.) se comportă anormal și au rostul de a testa buna funcționare a arbitrului.
 
 ## Arbitrul
 
