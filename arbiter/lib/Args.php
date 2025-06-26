@@ -63,6 +63,9 @@ class Args {
       $msg = sprintf('Numărul maxim de jucători este %d.', Config::MAX_PLAYERS);
       throw new SplendorException($msg);
     }
+    if (Util::hasDuplicates($this->names)) {
+      throw new SplendorException('Jucătorii trebuie să aibă nume distincte.');
+    }
     if (!$this->numGames) {
       throw new SplendorException('Argumentul --games nu poate fi 0.');
     }

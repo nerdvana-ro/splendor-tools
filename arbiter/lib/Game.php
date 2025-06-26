@@ -314,31 +314,11 @@ class Game {
   function getResults(): array {
     $results = [];
 
-    foreach ($this->players as $id => $p) {
-      $results[] = [
-        'id' => $id,
-        'winner' => false,
-        'score' => $p->getScore(),
-        'cards' => count($p->cards),
-      ];
+    foreach ($this->players as $p) {
+      $results[] = new GameResult($p);
     }
 
-    usort($results, function($a, $b) {
-      if ($a['score'] != $b['score']) {
-        return $b['score'] - $a['score'];
-      }
-      return $a['cards'] - $b['cards'];
-    });
-
-    if ($results[0]['score'] >= Config::ENDGAME_SCORE) {
-      foreach ($results as &$rec) {
-        if (($rec['score'] == $results[0]['score']) &&
-            ($rec['cards'] == $results[0]['cards'])) {
-          $rec['winner'] = true;
-        }
-      }
-    }
-
+    GameResult::decideWinners($results);
     return $results;
   }
 

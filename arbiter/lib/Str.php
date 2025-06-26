@@ -2,7 +2,7 @@
 
 class Str {
 
-  static function startsWith($string, $prefix): bool {
+  static function startsWith(string $string, string $prefix): bool {
     $start = substr($string, 0, strlen($prefix));
     return $start == $prefix;
   }

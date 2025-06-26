@@ -17,6 +17,10 @@ class Config {
   // Limită hard pentru cazul în care agenții intră în buclă.
   const MAX_ROUNDS = 100;
 
+  // Numărul de puncte puse în joc la fiecare partidă. Trebuie să fie
+  // divizibil cu 2, 3 și 4.
+  const GAME_POINTS = 12;
+
   // Numele fișierelor salvate în directorul indicat de --save. Vom înlocui cu
   // sprintf() numărul partidei.
   const SAVE_GAME_FILE = 'game-%03d.json';
