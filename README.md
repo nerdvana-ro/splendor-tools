@@ -16,7 +16,7 @@ Arbitrul poate organiza și turnee cu mai multe partide.
 
 ## Viewerul
 
-Viewerul vă permite să vizualizați mutare cu mutare o partidă. El este scris în HTML + Javascript + CSS, deci îl puteți executa în browser.
+[Viewerul](https://github.com/nerdvana-ro/splendor-tools/tree/main/viewer) vă permite să vizualizați mutare cu mutare o partidă. El este scris în HTML + Javascript + CSS, deci îl puteți executa în browser.
 
 ## Pași de urmat
 
