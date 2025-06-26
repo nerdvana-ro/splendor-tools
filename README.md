@@ -17,3 +17,12 @@ Arbitrul poate organiza și turnee cu mai multe partide.
 ## Viewerul
 
 Viewerul vă permite să vizualizați mutare cu mutare o partidă. El este scris în HTML + Javascript + CSS, deci îl puteți executa în browser.
+
+## Pași de urmat
+
+Vă recomand să încercați uneltele în această ordine:
+
+* **Testați arbitrul**: Faceți instalările și configurările necesare pentru a organiza o partidă între două copii ale agentului Doofus.
+  * Dacă rulați Windows, va fi nevoie să instalați WSL. Și acest pas este documentat în secțiunea despre arbitru.
+* **Testați viewerul**: Încărcați o partidă salvată în viewer și derulați prin ea.
+* **Scrieți un client:** De aceea ne-am adunat aici! 😉
