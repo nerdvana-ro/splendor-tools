@@ -69,7 +69,7 @@ Dacă merge, vei vedea un mesaj cu instrucțiuni de apelare.
 
 ## Compilează clientul Doofus
 
-Pentru aceasta, vei avea nevoie de compilatorul de C++ (`g++`) și de utilitarele `cmake` și `make`. Vom studia împreună ce pachete trebuie instalate. Pentru Ubuntu, cred că sînt acestea:
+Pentru aceasta, vei avea nevoie de compilatorul de C++ (`g++`) și de utilitarele `cmake` și `make`. Vom descoperi împreună ce pachete trebuie instalate. Pentru Ubuntu, cred că sînt acestea:
 
 ```bash
 sudo apt install build-essential cmake
