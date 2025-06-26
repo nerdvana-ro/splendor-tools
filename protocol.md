@@ -103,9 +103,9 @@ Această acțiune are formatul:
 3 card_id
 ```
 
-Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau poate fi `-1`, `-2` sau `-3` pentru a indica prima carte din pachetul de nivel 1, 2, respectiv 3.
+Aici, `card_id` se poate referi la o carte cu fața în sus sau poate fi `-1`, `-2` sau `-3` pentru a indica prima carte din pachetul de nivel 1, 2, respectiv 3.
 
-Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (agentul vostru trebuie să țină evidența ca să știe dacă l-a primit sau nu).
+Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil.
 
 ### Acțiunea „cumpără o carte”
 
@@ -115,7 +115,7 @@ Arbitrul vă va oferi automat un jeton de aur, dacă el este disponibil (agentul
 4 card_id
 ```
 
-Aici, `card_id` se poate referi la una dintre cele 12 cărți cu fața în sus sau la una dintre cărțile din rezerva agentului.
+Aici, `card_id` se poate referi la o carte cu fața în sus sau la una dintre cărțile din rezerva agentului.
 
 Arbitrul va deduce automat costurile cărții din mîna agentului. Arbitrul va folosi în ordine, pentru fiecare dintre cele 5 culori:
 
@@ -125,7 +125,7 @@ Arbitrul va deduce automat costurile cărții din mîna agentului. Arbitrul va f
 
 ### Returnarea jetoanelor
 
-Acțiunile 1-3 îi aduc agentului jetoane suplimentare. Dacă agentul ajunge astfel la `j > 10` jetoane în mînă, continuați linia cu o listă de `j - 10` culori pentru jetoanele de returnat. Arbitrul ține și el evidența bunurilor și știe cîte jetoane așteaptă din partea agentului.
+Acțiunile 1-3 îi aduc agentului jetoane suplimentare. Dacă agentul ajunge astfel la `j > 10` jetoane în mînă, continuați ieșirea cu o listă de `j - 10` culori pentru jetoanele de returnat. 
 
 ### Acțiuni incorecte
 
@@ -133,6 +133,16 @@ Orice acțiuni care se abat de la aceste reguli sînt considerate mutări incore
 
 * Încercarea de a lua 3 jetoane, din care două au aceeași culoare.
 * Încercarea de a lua 2 jetoane de aceeași culoare dintr-un teanc insuficient de mare.
+* Omisiunea de a returna jetoane.
+* Încercarea de a returna jetoane cînd nu este necesar.
+* Încercarea de a returna mai multe jetoane decît este necesar.
 * Încercarea de a rezerva a 4-a carte.
 * Încercarea de a cumpăra o carte inexistentă.
 * Încercarea de a cumpăra o carte pe care agentul nu o poate plăti.
+
+## Alte observații
+
+* Fișierele [cards.csv](https://github.com/nerdvana-ro/splendor-tools/blob/main/cards.csv) și [nobles.csv](https://github.com/nerdvana-ro/splendor-tools/blob/main/nobles.csv) conțin codificarea cărților, respectiv a nobililor. Desigur, le puteți folosi în programele voastre. ID-urile încep de la 1.
+* [Regulile oficiale](https://www.spacecowboys.fr/_files/ugd/59baa2_00997b64c555405c8df90c4c8bf9f4ec.pdf).
+* Diferență față de regulile oficiale: dacă la un moment dat un agent poate primi doi nobili, agentul nu poate decide pe care îl primește. Arbitrul i-l oferă automat pe primul (adică pe cel care apare primul la intrare).
+* Puteți juca Splendor și online pe [BGA](https://boardgamearena.com/gamepanel?game=splendor) sau pe [Steam](https://store.steampowered.com/app/376680/Splendor/).
