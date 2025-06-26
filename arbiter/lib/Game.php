@@ -22,7 +22,7 @@ class Game {
 
     $this->board = new Board($this->n);
     $this->curPlayer = 0;
-    $this->roundNo = 0;
+    $this->roundNo = 1;
     $this->saveGame = new SaveGame($this->players, $this->board);
   }
 
@@ -297,7 +297,7 @@ class Game {
         return true;
       }
     }
-    if ($this->roundNo >= Config::MAX_ROUNDS) {
+    if ($this->roundNo > Config::MAX_ROUNDS) {
       return true;
     }
     return false;
@@ -329,7 +329,7 @@ class Game {
 
   function asInputFile(): string {
     $l = [];
-    $l[] = $this->n . ' ' . $this->curPlayer;
+    $l[] = $this->n . ' ' . 1 + $this->curPlayer;
     $l[] = $this->roundNo;
     $l[] = $this->board->asInputFile();
     foreach ($this->players as $id => $p) {
@@ -341,10 +341,10 @@ class Game {
   function print(): void {
     $pname = $this->players[$this->curPlayer]->name;
     if ($this->isOver()) {
-      Log::info('================ Final (%d runde)', [ $this->roundNo ]);
+      Log::info('================ Final (%d runde)', [ $this->roundNo - 1 ]);
     } else {
       Log::info('================ Runda %d, jucător %d (%s)',
-                [ 1 + $this->roundNo, 1 + $this->curPlayer, $pname]);
+                [ $this->roundNo, 1 + $this->curPlayer, $pname]);
     }
     $this->board->print();
     foreach ($this->players as $id => $player) {

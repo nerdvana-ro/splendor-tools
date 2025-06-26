@@ -10,7 +10,7 @@ void Game::readFromStdin() {
   scanf("%d %d", &ignored, &player_id); // num_players
   scanf("%d", &ignored); // round_number
   board.readFromStdin();
-  for (int i = 0; i <= player_id; i++) {
+  for (int i = 0; i < player_id; i++) {
     player.readFromStdin(); // reține-l doar pe al nostru
   }
 }
