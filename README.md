@@ -26,7 +26,7 @@ Vă recomand să încercați uneltele în această ordine:
   * Dacă rulați Windows, va fi nevoie să instalați WSL. Și acest pas este documentat în secțiunea despre arbitru.
 * **Testați viewerul**: Încărcați o partidă salvată în viewer și derulați prin ea.
 * **Învățați strategia jocului:** Splendor este un joc cu reguli simple, dar strategie complexă. Vă recomand să jucați cel puțin 5 partide între voi, ca să descoperiți ce merge și ce nu merge. Desigur, puteți citi și opinii de pe Internet.
-* **Scrieți un client:** De aceea ne-am adunat aici! 😉
+* **Scrieți un client:** De aceea ne-am adunat aici! 😉 Urmați specificațiile din [protocol.md](https://github.com/nerdvana-ro/splendor-tools/blob/main/protocol.md).
 
 Scopul final al acestei săptămîni este să scrieți un client care să bată cît mai convingător agentul Doofus.
 
