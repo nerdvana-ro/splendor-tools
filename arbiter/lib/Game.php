@@ -348,7 +348,7 @@ class Game {
     }
     $this->board->print();
     foreach ($this->players as $id => $player) {
-      $player->print($id);
+      $player->print(1 + $id);
     }
   }
 }

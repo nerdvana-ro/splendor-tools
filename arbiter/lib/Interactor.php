@@ -78,7 +78,8 @@ class Interactor {
     @unlink(self::OUTPUT_FILE);
     @unlink(self::ERROR_FILE);
 
-    Log::debug('Apelez %s în directorul %s.', [ $this->binary, $dir ]);
+    Log::debug('Apelez %s în directorul %s cu intrarea:', [ $this->binary, $dir ]);
+    Log::debug(trim($this->input));
     $cmd = sprintf('ulimit -t %d && %s < %s > %s 2> %s',
                    self::TIMEOUT,
                    $this->binary,
