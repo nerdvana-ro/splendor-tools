@@ -1,6 +1,7 @@
 $(function() {
 
   let viewer = null;
+  let lastLoadedJson = null;
   let cardBackStub = $('#card-back-stub').detach().removeAttr('id');
   let cardFrontStub = $('#card-front-stub').detach().removeAttr('id');
   let chipStub = $('#chip-stub').detach().removeAttr('id');
@@ -456,6 +457,7 @@ $(function() {
     paintAll() {
       this.paintDecks();
       this.paintChips();
+      $('#log').empty();
     }
 
     logMessage(name, msg) {
@@ -711,14 +713,15 @@ $(function() {
   function init() {
     $('#file-field').on('change', fileUploaded);
     $('#btn-forward').on('click', moveForward);
+    $('#btn-replay').on('click', loadGame);
     $(document).on('keydown', keyHandler);
   }
 
-  function loadGameFile(json) {
-    let data = JSON.parse(json);
+  function loadGame() {
+    let data = JSON.parse(lastLoadedJson);
     viewer = new Viewer(data);
     $('.round-info').css('visibility', 'visible');
-    $('#btn-forward').css('visibility', 'visible');
+    $('.controls button').css('visibility', 'visible');
     $('.columns').css('visibility', 'visible');
   }
 
@@ -728,7 +731,8 @@ $(function() {
     let reader = new FileReader();
 
     let display_file = ( e ) => {
-      loadGameFile(e.target.result);
+      lastLoadedJson = e.target.result;
+      loadGame();
     };
 
     let on_reader_load = () => {
