@@ -10,7 +10,7 @@ Repoul include cîțiva agenți, dintre care Doofus joacă corect (dar modest). 
 
 ## Arbitrul
 
-Arbitrul este unealta care interfațează mai mulți agenți. Arbitrul ține evidența jocului și invocă pe rînd fiecare agent, comunicîndu-i starea curentă. Apoi citește răspunsul agentului și actualizează starea jocului.
+[Arbitrul](https://github.com/nerdvana-ro/splendor-tools/tree/main/arbiter) este unealta care interfațează mai mulți agenți. Arbitrul ține evidența jocului și invocă pe rînd fiecare agent, comunicîndu-i starea curentă. Apoi citește răspunsul agentului și actualizează starea jocului.
 
 Arbitrul poate organiza și turnee cu mai multe partide.
 
