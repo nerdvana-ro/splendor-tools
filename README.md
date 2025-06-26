@@ -4,19 +4,19 @@ Acest set de unelte vă permite să creați un program (agent) pentru jocul Sple
 
 ## Agenții
 
-[Agenții](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent) sînt programe care joacă Splendor. Agenții citesc starea jocului (conținutul mesei și bunurile fiecărui jucător) și răspund printr-o mutare.
+[Agenții](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent) sînt programe care joacă Splendor. Agenții citesc starea jocului (conținutul mesei și bunurile fiecărui jucător) și tipăresc o mutare.
 
-Repoul include cîțiva agenți, dintre care [Doofus](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent/doofus) joacă corect (dar modest). Restul agenților (Error, Hang etc.) se comportă anormal și au rostul de a testa buna funcționare a arbitrului.
+Repoul include cîțiva agenți, dintre care [Doofus](https://github.com/nerdvana-ro/splendor-tools/tree/main/agent/doofus) joacă corect (dar modest). Restul agenților (Error, Hang etc.) se comportă anormal și au rolul de a testa buna funcționare a arbitrului.
 
 ## Arbitrul
 
-[Arbitrul](https://github.com/nerdvana-ro/splendor-tools/tree/main/arbiter) este unealta care interfațează mai mulți agenți. Arbitrul ține evidența jocului și invocă pe rînd fiecare agent, comunicîndu-i starea curentă. Apoi citește răspunsul agentului și actualizează starea jocului.
+[Arbitrul](https://github.com/nerdvana-ro/splendor-tools/tree/main/arbiter) organizează partide între mai mulți agenți. Arbitrul ține evidența jocului și invocă pe rînd fiecare agent, comunicîndu-i starea curentă. Apoi citește răspunsul agentului și actualizează starea jocului.
 
 Arbitrul poate organiza și turnee cu mai multe partide.
 
 ## Viewerul
 
-[Viewerul](https://github.com/nerdvana-ro/splendor-tools/tree/main/viewer) vă permite să vizualizați mutare cu mutare o partidă. El este scris în HTML + Javascript + CSS, deci îl puteți executa în browser.
+[Viewerul](https://github.com/nerdvana-ro/splendor-tools/tree/main/viewer) redă o partidă mutare cu mutare, într-un mediu grafic. El este scris în HTML + Javascript + CSS, deci trebuie deschis într-un browser.
 
 ## Pași de urmat
 
@@ -37,11 +37,11 @@ Desigur, vom avea și un turneu final (vom decide formatul miercuri sau joi). Da
 Strategia lui Doofus este _greedy_:
 
 * Dacă poate cumpăra o carte, o cumpără. Încearcă mai întîi cărțile de nivel mai mare.
-* Dacă poate aduna destule jetoane ca să cumpere o carte la tura viitoare, adună.
+* Dacă poate aduna destule jetoane ca să cumpere o carte la tura viitoare, le adună.
 * Altfel ia cît de multe jetoane poate, de culori aleatorii.
 * Nu rezervă cărți.
 * Nu urmărește să ia nobili.
 
 Această strategie nu este deloc eficientă. Doofus termină jocul în 26-28 de runde. Jucătorii umani buni îl termină în 18-20 de runde.
 
-Codul are 600 de linii (.cpp și .h, bine modularizat). Dacă vă ajută la ceva, puteți să vă inspirați din el pentru scheletul programului vostru.
+Codul are 600 de linii destul de aerisite. Dacă vă ajută la ceva, puteți să vă inspirați din el pentru organizarea programului vostru.
