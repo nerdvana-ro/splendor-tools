@@ -25,4 +25,23 @@ Vă recomand să încercați uneltele în această ordine:
 * **Testați arbitrul**: Faceți instalările și configurările necesare pentru a organiza o partidă între două copii ale agentului Doofus.
   * Dacă rulați Windows, va fi nevoie să instalați WSL. Și acest pas este documentat în secțiunea despre arbitru.
 * **Testați viewerul**: Încărcați o partidă salvată în viewer și derulați prin ea.
+* **Învățați strategia jocului:** Splendor este un joc cu reguli simple, dar strategie complexă. Vă recomand să jucați cel puțin 5 partide între voi, ca să descoperiți ce merge și ce nu merge. Desigur, puteți citi și opinii de pe Internet.
 * **Scrieți un client:** De aceea ne-am adunat aici! 😉
+
+Scopul final al acestei săptămîni este să scrieți un client care să bată cît mai convingător agentul Doofus.
+
+Desigur, vom avea și un turneu final (vom decide formatul miercuri sau joi). Dacă vă clasați onorabil în acel turneu, cu atît mai bine!
+
+## Cîteva cuvinte despre Doofus
+
+Strategia lui Doofus este _greedy_:
+
+* Dacă poate cumpăra o carte, o cumpără. Încearcă mai întîi cărțile de nivel mai mare.
+* Dacă poate aduna destule jetoane ca să cumpere o carte la tura viitoare, adună.
+* Altfel ia cît de multe jetoane poate, de culori aleatorii.
+* Nu rezervă cărți.
+* Nu urmărește să ia nobili.
+
+Această strategie nu este deloc eficientă. Doofus termină jocul în 26-28 de runde. Jucătorii umani buni îl termină în 18-20 de runde.
+
+Codul are 600 de linii (.cpp și .h, bine modularizat). Dacă vă ajută la ceva, puteți să vă inspirați din el pentru scheletul programului vostru.
