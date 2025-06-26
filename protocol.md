@@ -10,7 +10,7 @@ Agentul poate tipări orice mesaje la eroarea standard (`cerr` / `stderr`). Arbi
 
 Agentul are la dispoziție 10 secunde per mutare și poate folosi oricîtă memorie în limita RAM-ului (laptopul meu are 16 GB).
 
-Dacă doriți, agentul poate stoca orice date în directorul curent, în limite rezonabile (cîțiva GB). Dacă doriți să-mi trimiteți în avans niște date precalculate, trimiteți-mi-le cumva.
+Agentul poate stoca orice date în directorul său, în limite rezonabile (cîțiva GB). Dacă doriți să-mi trimiteți în avans niște date precalculate, trimiteți-mi-le cumva.
 
 Dacă agentul se termină anormal, depășește timpul sau încearcă să facă o acțiune incorectă, atunci arbitrul va alege automat mutarea „pas” (adică agentul nu va face nicio acțiune).
 
@@ -22,10 +22,10 @@ Datele de intrare au următorul format, fără linii goale și fără comentarii
 
 ```
 // Numărul de jucători, între 1 și 4.
-// Numărul de ordine al agentului vostru, între 0 și num_players - 1.
+// Numărul de ordine al agentului vostru, între 1 și num_players.
 num_players your_id
 
-// Numărul rundei curente, indexată de la 0.
+// Numărul rundei curente, indexată de la 1.
 round_number
 ```
 
@@ -50,7 +50,7 @@ num_nobles nob_1 nob_2 ...
 
 ### Detalii despre bunurile jucătorilor
 
-Pentru fiecare jucător, în ordinea mesei, cîte o secțiune cu conținutul:
+Pentru fiecare jucător de la 1 la `num_players`, cîte o secțiune cu conținutul:
 
 ```
 // Numerele de jetoane de cele șase culori.
