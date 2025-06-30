@@ -292,9 +292,11 @@ class Game {
   }
 
   private function isOver(): bool {
-    foreach ($this->players as $p) {
-      if ($p->getScore() >= Config::ENDGAME_SCORE) {
-        return true;
+    if ($this->curPlayer == 0) {
+      foreach ($this->players as $p) {
+        if ($p->getScore() >= Config::ENDGAME_SCORE) {
+          return true;
+        }
       }
     }
     if ($this->roundNo > Config::MAX_ROUNDS) {

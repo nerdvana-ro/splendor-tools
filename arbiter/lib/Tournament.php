@@ -87,7 +87,7 @@ class Tournament {
     Log::success('    nume                puncte');
     Log::success('    --------------------------');
     foreach ($this->totals as $name => $points) {
-      Log::success('    %-20s  %2d', [ $name, $points ]);
+      Log::success('    %-20s  %4d', [ $name, $points ]);
     }
     Log::success('');
   }
