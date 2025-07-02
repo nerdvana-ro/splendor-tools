@@ -740,6 +740,10 @@ $(function() {
 
     reader.onload = on_reader_load();
     reader.readAsText(fl_file);
+
+    // Dacă utilizatorul încarcă un alt fișier cu același nume, evenimentul
+    // change nu se mai declanșează. Pentru a preveni asta, șterge cîmpul.
+    $("#file-field").val('');
   }
 
   function keyHandler(e) {
