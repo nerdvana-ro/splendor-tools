@@ -59,7 +59,7 @@ class Tournament {
 
     foreach ($results as $res) {
       if ($res->winner) {
-        $this->totals[$res->name] += Config::GAME_POINTS / $numWinners;
+        $this->totals[$res->name] += 1.0 / $numWinners;
       }
     }
     arsort($this->totals);
@@ -87,7 +87,7 @@ class Tournament {
     Log::success('    nume                puncte');
     Log::success('    --------------------------');
     foreach ($this->totals as $name => $points) {
-      Log::success('    %-20s  %4d', [ $name, $points ]);
+      Log::success('    %-20s %5.2f', [ $name, $points ]);
     }
     Log::success('');
   }
