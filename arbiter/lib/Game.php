@@ -11,6 +11,7 @@ class Game {
   private int $roundNo;
   private Board $board;
   private array $players;
+  private array $inputs; // Indexate după rundă și după jucător.
   private SaveGame $saveGame;
   private SaveGameTurn $saveGameTurn;
 
@@ -274,6 +275,7 @@ class Game {
       $this->print();
       $this->saveGameTurn = new SaveGameTurn();
       $state = $this->asInputFile();
+      $this->inputs[$this->roundNo][$this->curPlayer + 1] = $state;
       try {
         $output = $p->requestAction($state);
         $this->saveGameTurn->kibitzes = $output->kibitzes;
@@ -324,12 +326,19 @@ class Game {
     return $results;
   }
 
-  function getNumRounds(): int {
+  private function ensureIsOver(): void {
     if (!$this->isOver()) {
       $msg = 'Nu poți apela această funcție decît la final.';
       throw new SplendorException($msg);
     }
+  }
+
+  function getNumRounds(): int {
     return $this->roundNo - 1;
+  }
+
+  function getInputs(): array {
+    return $this->inputs;
   }
 
   function save(string $fileName): void {

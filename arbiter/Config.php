@@ -20,6 +20,8 @@ class Config {
   // Numele fișierelor salvate în directorul indicat de --save. Vom înlocui cu
   // sprintf() numărul partidei.
   const SAVE_GAME_FILE = 'game-%03d.json';
+  const SAVE_INPUT_DIR = 'inputs-%03d';
+  const SAVE_INPUT_FILE = 'round-%03d-player-%d.txt';
 
   /**
    * Constante specifice jocului Splendor.

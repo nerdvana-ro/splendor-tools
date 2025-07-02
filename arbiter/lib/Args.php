@@ -8,6 +8,7 @@ class Args {
     'games:',
     'seed:',
     'save:',
+    'save-inputs',
   ];
 
 
@@ -16,6 +17,7 @@ class Args {
   private int $numGames;
   private int $seed;
   private string $saveDir;
+  private bool $saveInputs;
 
   // PHP's getopt() will return a string if an argument appears once, but an
   // array if the argument appears multiple times. Convert the first situation
@@ -36,6 +38,7 @@ class Args {
     $this->numGames = $opts['games'] ?? 1;
     $this->seed = $opts['seed'] ?? 0;
     $this->saveDir = $opts['save'] ?? '';
+    $this->saveInputs = isset($opts['save-inputs']);
     $this->validate();
   }
 
@@ -48,6 +51,7 @@ class Args {
     print "    --games <număr>    Numărul de partide.\n";
     print "    --seed <număr>     Seed-ul pentru RNG (0 sau lipsă pentru seed bazat pe timp)\n";
     print "    --save <cale>      Directorul unde vom salva partidele.\n";
+    print "    --save-inputs      Salvează și toate datele de intrare.\n";
     print "\n";
     print "Opțiunile --binary și --name pot fi repetate pentru fiecare agent.\n";
   }
@@ -71,6 +75,10 @@ class Args {
     }
     if ($this->saveDir && !is_dir($this->saveDir)) {
       $msg = sprintf('Directorul [%s] nu există.', $this->saveDir);
+      throw new SplendorException($msg);
+    }
+    if ($this->saveInputs && !$this->saveDir) {
+      $msg = 'Dacă specifici --save-inputs, trebuie să specifici și --save <cale>';
       throw new SplendorException($msg);
     }
   }
@@ -99,5 +107,9 @@ class Args {
 
   function getSaveDir(): string {
     return $this->saveDir;
+  }
+
+  function getSaveInputs(): bool {
+    return $this->saveInputs;
   }
 }

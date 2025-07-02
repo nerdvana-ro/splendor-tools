@@ -5,6 +5,7 @@ class Tournament {
   private int $curGame;
   private array $playerInfo;
   private string $saveDir;
+  private bool $saveInputs;
   private array $totals; // map de nume => scor
 
   function __construct(Args $args) {
@@ -12,6 +13,7 @@ class Tournament {
     $this->numGames = $args->getNumGames();
     $this->playerInfo = $args->getPlayers();
     $this->saveDir = $args->getSaveDir();
+    $this->saveInputs = $args->getSaveInputs();
 
     foreach ($this->playerInfo as $rec) {
       $this->totals[$rec['name']] = 0;
@@ -31,12 +33,8 @@ class Tournament {
     for ($this->curGame = 1; $this->curGame <= $this->numGames; $this->curGame++) {
       $game = new Game($this->playerInfo);
       $game->run();
+      $this->saveGameData($game);
       $this->tallyResults($game->getResults(), $game->getNumRounds());
-
-      if ($this->saveDir) {
-        $fileName = $this->getSaveFile();
-        $game->save($fileName);
-      }
       $this->rotatePlayerInfo();
     }
   }
@@ -46,9 +44,43 @@ class Tournament {
     $this->playerInfo[] = $head;
   }
 
+  private function saveGameData(Game &$game): void {
+    if ($this->saveDir) {
+      $fileName = $this->getSaveFile();
+      Log::debug('Salvez partida în %s.', [ $fileName ]);
+      $game->save($fileName);
+      if ($this->saveInputs) {
+        $this->saveInputs($game->getInputs());
+      }
+    }
+  }
+
   private function getSaveFile(): string {
     $fileName = sprintf(Config::SAVE_GAME_FILE, $this->curGame);
     return $this->saveDir . '/' . $fileName;
+  }
+
+  private function getSaveInputsDir(): string {
+    $rel = sprintf(Config::SAVE_INPUT_DIR, $this->curGame);
+    return $this->saveDir . '/' . $rel . '/';
+  }
+
+  private function getSaveInputsFile(int $round, int $player): string {
+    $fileName = sprintf(Config::SAVE_INPUT_FILE, $round, $player);
+    return $this->getSaveInputsDir() . $fileName;
+  }
+
+  private function saveInputs(array $inputs): void {
+    $dir = $this->getSaveInputsDir();
+    exec("rm -rf $dir");
+    mkdir($dir);
+    Log::debug('Salvez datele de intrare în %s.', [ $dir ]);
+    foreach ($inputs as $round => $data) {
+      foreach ($data as $player => $input) {
+        $fileName = $this->getSaveInputsFile($round, $player);
+        file_put_contents($fileName, $input);
+      }
+    }
   }
 
   private function tallyResults(array $results, int $numRounds): void {
