@@ -324,6 +324,14 @@ class Game {
     return $results;
   }
 
+  function getNumRounds(): int {
+    if (!$this->isOver()) {
+      $msg = 'Nu poți apela această funcție decît la final.';
+      throw new SplendorException($msg);
+    }
+    return $this->roundNo - 1;
+  }
+
   function save(string $fileName): void {
     $json = $this->saveGame->asJson() . "\n";
     file_put_contents($fileName, $json);

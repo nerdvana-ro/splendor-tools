@@ -31,7 +31,7 @@ class Tournament {
     for ($this->curGame = 1; $this->curGame <= $this->numGames; $this->curGame++) {
       $game = new Game($this->playerInfo);
       $game->run();
-      $this->tallyResults($game->getResults());
+      $this->tallyResults($game->getResults(), $game->getNumRounds());
 
       if ($this->saveDir) {
         $fileName = $this->getSaveFile();
@@ -51,7 +51,7 @@ class Tournament {
     return $this->saveDir . '/' . $fileName;
   }
 
-  private function tallyResults(array $results): void {
+  private function tallyResults(array $results, int $numRounds): void {
     $numWinners = 0;
     foreach ($results as $res) {
       $numWinners += $res->winner;
@@ -64,13 +64,14 @@ class Tournament {
     }
     arsort($this->totals);
 
-    $this->printResults($results);
+    $this->printResults($results, $numRounds);
     $this->printTotals();
   }
 
-  private function printResults(array $results): void {
+  private function printResults(array $results, int $numRounds): void {
     Log::success('');
-    Log::success('==== Rezultatele partidei %d', [ $this->curGame ]);
+    Log::success('==== Rezultatele partidei %d (%d runde)',
+                 [ $this->curGame, $numRounds ]);
     Log::success('    nume                scor cărți  cîștigător');
     Log::success('    ------------------------------------------');
     foreach ($results as $r) {
