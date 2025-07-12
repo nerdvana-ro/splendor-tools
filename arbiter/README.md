@@ -111,3 +111,8 @@ Acum în `~/Desktop/games` veți găsi fișierul `game-001.json`.
 Arbitrul mai admite opțiunile `--games <număr>` pentru a organiza mai mult de o partidă și `--seed <număr>` pentru a genera în mod repetabil același pachet de cărți.
 
 În plus, puteți modifica valorile constantelor din `Config.php`. Fiecare constantă este documentată. De exemplu, puteți reduce nivelul de zgomot modificînd valoarea lui `LOG_LEVEL`, de exemplu în `Log::INFO` ca să nu mai tipărească mesajele de debug.
+
+## Adversar uman
+
+Dacă doriți să jucați voi înșivă o partidă contra agentului, puteți pasa `--binary human --name orice_nume`. Cînd vă vine rîndul, arbitrul va aștepta o mutare de la tastatură, în formatul cunoscut.
+
