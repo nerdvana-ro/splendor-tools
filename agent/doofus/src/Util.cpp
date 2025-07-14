@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <ranges>
 #include <stdio.h>
 #include <stdlib.h>
 #include "Util.h"
@@ -21,7 +20,7 @@ int Util::rand(int lo, int hi) {
 }
 
 void Util::shuffle(std::vector<int>& s) {
-  std::ranges::shuffle(s, rng);
+  std::shuffle(s.begin(), s.end(), rng);
 }
 
 void Util::ignoreArrayFromStdin() {
