@@ -104,12 +104,13 @@ class Tournament {
     Log::success('');
     Log::success('==== Rezultatele partidei %d (%d runde)',
                  [ $this->curGame, $numRounds ]);
-    Log::success('    nume                scor cărți  cîștigător');
-    Log::success('    ------------------------------------------');
+    Log::success('    nume                scor cărți  cîștigător    timp total / maxim');
+    Log::success('    ----------------------------------------------------------------');
     foreach ($results as $r) {
-      $mark = $r->winner ? '✅' : ' ';
-      Log::success('    %-20s %2d   %2d        %s',
-                [ $r->name, $r->score, $r->cards, $mark ]);
+      $mark = $r->winner ? '✅' : '  ';
+      Log::success('    %-20s %2d   %2d        %s          %0.3f / %0.3f',
+                   [ $r->name, $r->score, $r->cards, $mark,
+                     $r->sumTimes / 1000, $r->maxTime / 1000 ]);
     }
     Log::success('');
   }

@@ -5,12 +5,16 @@ class GameResult {
   public int $score;
   public int $cards;
   public bool $winner;
+  public int $sumTimes;
+  public int $maxTime;
 
   function __construct(Player $p) {
     $this->name = $p->name;
     $this->score = $p->getScore();
     $this->cards = count($p->cards);
     $this->winner = false;
+    $this->sumTimes = $p->sumTimes;
+    $this->maxTime = $p->maxTime;
   }
 
   private function cmp(GameResult $other): int {

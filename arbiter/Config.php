@@ -14,6 +14,8 @@ class Config {
 
   const KIBITZ_PREFIX = 'kibitz ';
 
+  const TIME_LIMIT_PER_MOVE = 10; // secunde
+
   // Limită hard pentru cazul în care agenții intră în buclă.
   const MAX_ROUNDS = 100;
 

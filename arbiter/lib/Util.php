@@ -6,4 +6,8 @@ class Util {
     return count($arr) != count(array_unique($arr));
   }
 
+  static function getTimeMillis(): int {
+    return floor(microtime(true) * 1000);
+  }
+
 }

@@ -10,6 +10,9 @@ class Player {
   public array $reserve; // vector de ReservedCard
   public array $nobles;
 
+  public int $sumTimes;
+  public int $maxTime;
+
   function __construct(string $binary, string $name) {
     $this->binary = $binary;
     $this->name = $name;
@@ -20,6 +23,9 @@ class Player {
     $this->cardColors = array_fill(0, Config::NUM_COLORS + 1, 0);
     $this->reserve = [];
     $this->nobles = [];
+
+    $this->sumTimes = 0;
+    $this->maxTime = 0;
   }
 
   function getScore(): int {
@@ -119,7 +125,13 @@ class Player {
     Log::info('Aștept o acțiune de la %s', [ $this->name ]);
     $inter = new Interactor($this->binary, $gameState);
     $inter->run();
+    $this->updateTimes($inter->getTime());
     return $inter->getOutput();
+  }
+
+  private function updateTimes(int $time): void {
+    $this->sumTimes += $time;
+    $this->maxTime = max($this->maxTime, $time);
   }
 
   // $reveal: Arătăm sau nu cărțile ascunse?

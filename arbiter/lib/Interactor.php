@@ -4,17 +4,18 @@ class Interactor {
   const string INPUT_FILE = '/tmp/input.txt';
   const string OUTPUT_FILE = '/tmp/output.txt';
   const string ERROR_FILE = '/tmp/error.txt';
-  const int TIMEOUT = 10; // secunde
 
   private string $binary;
   private string $input;
 
+  private float $time;    // Timpul petrecut, inclusiv invocarea.
   private array $tokens;   // Ieșirea tokenizată în cuvinte.
   private array $kibitzes; // Liniile chibițate, fără prefixul „kibitz ”.
 
   function __construct(string $binary, string $input) {
     $this->binary = $binary;
     $this->input = $input;
+    $this->time = 0.0;
     $this->tokens = [];
     $this->kibitzes = [];
   }
@@ -25,6 +26,10 @@ class Interactor {
 
   function getKibitzes(): array {
     return $this->kibitzes;
+  }
+
+  function getTime(): int {
+    return $this->time;
   }
 
   function parseAgentOutput(): void {
@@ -82,19 +87,30 @@ class Interactor {
     Log::debug('Apelez %s în directorul %s cu intrarea:', [ $this->binary, $dir ]);
     Log::debug(trim($this->input));
     $cmd = sprintf('ulimit -t %d && %s < %s > %s 2> %s',
-                   self::TIMEOUT,
+                   Config::TIME_LIMIT_PER_MOVE,
                    $this->binary,
                    self::INPUT_FILE,
                    self::OUTPUT_FILE,
                    self::ERROR_FILE);
-    $ignoredOutput = null;
-    $resultCode = null;
-    exec($cmd, $ignoredOutput, $resultCode);
+
+    $resultCode = self::runCmd($cmd);
     if ($resultCode !== 0) {
       Log::warn('Agentul s-a terminat cu codul %d.', [ $resultCode ]);
     }
 
     self::parseAgentOutput();
     self::parseAgentError();
+  }
+
+  private function runCmd(string $cmd): int {
+    $ignoredOutput = null;
+    $resultCode = null;
+
+    $startTime = Util::getTimeMillis();
+    exec($cmd, $ignoredOutput, $resultCode);
+    $endTime = Util::getTimeMillis();
+    $this->time = $endTime - $startTime;
+    Log::debug('Timp de rulare: %0.3f secunde.', [ $this->time / 1000 ]);
+    return $resultCode;
   }
 }
