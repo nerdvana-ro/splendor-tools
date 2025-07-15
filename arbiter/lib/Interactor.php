@@ -86,7 +86,7 @@ class Interactor {
 
     Log::debug('Apelez %s în directorul %s cu intrarea:', [ $this->binary, $dir ]);
     Log::debug(trim($this->input));
-    $cmd = sprintf('ulimit -t %d && %s < %s > %s 2> %s',
+    $cmd = sprintf('ulimit -t %d && "%s" < %s > %s 2> %s',
                    Config::TIME_LIMIT_PER_MOVE,
                    $this->binary,
                    self::INPUT_FILE,
