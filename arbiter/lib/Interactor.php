@@ -15,6 +15,7 @@ class Interactor {
   function __construct(string $binary, string $input) {
     $this->binary = $binary;
     $this->input = $input;
+    $this->tokens = [];
     $this->kibitzes = [];
   }
 
