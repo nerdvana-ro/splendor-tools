@@ -89,6 +89,19 @@ class Args {
       $realBinary = ($binary == 'human')
         ? $binary
         : realpath($binary);
+
+      if ($realBinary != 'human') {
+        if (!file_exists($realBinary)) {
+          throw new SplendorException("Fișierul {$binary} nu există.");
+        }
+        if (is_dir($realBinary)) {
+          throw new SplendorException("Fișierul {$binary} este un director. Flaviu, tu ești?");
+        }
+        if (!is_executable($realBinary)) {
+          throw new SplendorException("Fișierul {$binary} nu este executabil.");
+        }
+      }
+
       $result[] = [
         'binary' => $realBinary,
         'name' => $this->names[$i],
