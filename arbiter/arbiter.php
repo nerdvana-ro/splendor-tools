@@ -10,10 +10,12 @@ function main(): void {
     $args = new Args();
     $args->parse();
 
+    Util::initRng($args->getSeed());
+
     $m = new MatchS(
       $args->getPlayers(),
       $args->getNumGames(),
-      $args->getSeed(),
+      0,
       $args->getSaveDir(),
       $args->getSaveInputs()
     );

@@ -6,8 +6,9 @@ class Tournament2 {
   private string $saveDir;
   private bool $saveInputs;
 
-  private int $roundNo;
   private array $roster; // indicii jucătorilor de împerecheat
+  private int $roundNo;
+  private int $roundSeed;
   private MatchResult $results;
 
   function __construct(array $playerInfo, int $numGames,
@@ -45,6 +46,7 @@ class Tournament2 {
       $msg = "                Runda {$r} / {$numRounds}               ";
       Log::successBanner($msg);
       $this->roundNo = $r;
+      $this->roundSeed = rand(100_000_000, 999_999_999);
       $this->runRound();
       $this->rotateRoster();
       $this->report();
@@ -80,7 +82,7 @@ class Tournament2 {
     @mkdir($saveDir, 0777, true); // recursive
     $m = new MatchS($info,
                     $this->numGames,
-                    222,
+                    $this->roundSeed,
                     $saveDir,
                     $this->saveInputs);
     $m->run();

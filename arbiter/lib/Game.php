@@ -15,10 +15,14 @@ class Game {
   private SaveGame $saveGame;
   private SaveGameTurn $saveGameTurn;
 
-  function __construct(array $playerInfo) {
+  function __construct(array $playerInfo, int $seed) {
     if (count($playerInfo) > Config::MAX_PLAYERS) {
       $msg = sprintf('Numărul maxim de jucători este %d.', Config::MAX_PLAYERS);
       throw new SplendorException($msg);
+    }
+
+    if ($seed) {
+      Util::initRng($seed);
     }
 
     $this->n = count($playerInfo);

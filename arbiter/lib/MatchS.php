@@ -1,35 +1,28 @@
 <?php
 
 class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
-  private int $numGames;
-  private int $curGame;
   private array $playerInfo;
+  private int $numGames;
+  private int $seed;
   private string $saveDir;
   private bool $saveInputs;
+
+  private int $curGame;
   private MatchResult $results;
 
   function __construct(array $playerInfo, int $numGames, int $seed,
                        string $saveDir, bool $saveInputs) {
     $this->playerInfo = $playerInfo;
     $this->numGames = $numGames;
-    $this->initRng($seed);
+    $this->seed = $seed;
     $this->saveDir = $saveDir;
     $this->saveInputs = $saveInputs;
     $this->results = new MatchResult();
   }
 
-  private function initRng(int $seed): void {
-    if (!$seed) {
-      $micros = microtime(true);
-      $seed = $micros * 1_000_000 % 1_000_000_000;
-    }
-    Log::info('Inițializez RNG cu seed-ul %d.', [ $seed ]);
-    srand($seed);
-  }
-
   function run(): void {
     for ($this->curGame = 1; $this->curGame <= $this->numGames; $this->curGame++) {
-      $game = new Game($this->playerInfo);
+      $game = new Game($this->playerInfo, $this->seed);
       $game->run();
       $this->saveGameData($game);
       $this->tallyResults($game->getResults(), $game->getNumRounds());

@@ -10,6 +10,8 @@ function main(): void {
     $args = new Args();
     $args->parse();
 
+    Util::initRng($args->getSeed());
+
     $t = new Tournament2(
       $args->getPlayers(),
       $args->getNumGames(),
