@@ -8,12 +8,13 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
   private bool $saveInputs;
   private array $totals; // map de nume => scor
 
-  function __construct(Args $args) {
-    $this->initRng($args->getSeed());
-    $this->numGames = $args->getNumGames();
-    $this->playerInfo = $args->getPlayers();
-    $this->saveDir = $args->getSaveDir();
-    $this->saveInputs = $args->getSaveInputs();
+  function __construct(array $playerInfo, int $numGames, int $seed,
+                       string $saveDir, bool $saveInputs) {
+    $this->playerInfo = $playerInfo;
+    $this->numGames = $numGames;
+    $this->initRng($seed);
+    $this->saveDir = $saveDir;
+    $this->saveInputs = $saveInputs;
 
     foreach ($this->playerInfo as $rec) {
       $this->totals[$rec['name']] = 0;

@@ -12,7 +12,13 @@ function main(): void {
     Card::loadCsv(__DIR__ . '/../cards.csv');
     Noble::loadCsv(__DIR__ . '/../nobles.csv');
 
-    $m = new MatchS($args);
+    $m = new MatchS(
+      $args->getPlayers(),
+      $args->getNumGames(),
+      $args->getSeed(),
+      $args->getSaveDir(),
+      $args->getSaveInputs()
+    );
     $m->run();
   } catch (SplendorException $e) {
     Log::fatal($e->getMessage());
