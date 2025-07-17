@@ -8,6 +8,7 @@ class Tournament2 {
 
   private int $roundNo;
   private array $roster; // indicii jucătorilor de împerecheat
+  private MatchResult $results;
 
   function __construct(array $playerInfo, int $numGames,
                        string $saveDir, bool $saveInputs) {
@@ -15,6 +16,8 @@ class Tournament2 {
     $this->numGames = $numGames;
     $this->saveDir = $saveDir;
     $this->saveInputs = $saveInputs;
+
+    $this->results = new MatchResult();
   }
 
   private function getMatchDir(int $p1, int $p2): string {
@@ -39,12 +42,12 @@ class Tournament2 {
   private function runRounds(): void {
     $numRounds = count($this->playerInfo) - 1;
     for ($r = 1; $r <= $numRounds; $r++) {
-      Log::success("+------------------------------------------+");
-      Log::success("|                Runda {$r} / {$numRounds}               |");
-      Log::success("+------------------------------------------+");
+      $msg = "                Runda {$r} / {$numRounds}               ";
+      Log::successBanner($msg);
       $this->roundNo = $r;
       $this->runRound();
       $this->rotateRoster();
+      $this->report();
     }
   }
 
@@ -81,17 +84,15 @@ class Tournament2 {
                     $saveDir,
                     $this->saveInputs);
     $m->run();
+
+    $this->results->add($m->getResults());
   }
 
   private function matchBanner(int $p1, int $p2): void {
     $msg = sprintf("     Meciul %s - %s     ",
                    $this->playerInfo[$p1]['name'],
                    $this->playerInfo[$p2]['name']);
-    $len = mb_strlen($msg);
-
-    Log::success('+' . str_repeat('-', $len) . '+');
-    Log::success('|' . $msg . '|');
-    Log::success('+' . str_repeat('-', $len) . '+');
+    Log::successBanner($msg);
   }
 
   private function rotateRoster(): void {
@@ -104,5 +105,12 @@ class Tournament2 {
       array_slice($this->roster, $half + 1, $half - 1),
       [ $this->roster[$half - 1] ]
     );
+  }
+
+  private function report(): void {
+    Log::success('');
+    Log::success("================ Situația după runda {$this->roundNo}");
+    $this->results->print($this->roundNo * $this->numGames);
+    Log::success('');
   }
 }

@@ -33,6 +33,14 @@ class Log {
     self::write(self::DEBUG, AnsiColors::DEBUG, $msg, $args, $indent);
   }
 
+  static function successBanner(string $msg): void {
+    $len = mb_strlen($msg);
+
+    Log::success('+' . str_repeat('-', $len) . '+');
+    Log::success('|' . $msg . '|');
+    Log::success('+' . str_repeat('-', $len) . '+');
+  }
+
   private static function write(
     int $level, string $color, string $msg, array $args = [], int $indent = 0): void {
 
