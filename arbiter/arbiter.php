@@ -1,14 +1,7 @@
 <?php
 
-// Încarcă la cerere clasele din directorul lib/.
-spl_autoload_register(function($className) {
-  $fileName = sprintf('%s/lib/%s.php', __DIR__, $className);
-  if (file_exists($fileName)) {
-    require_once $fileName;
-  }
-});
-
 require_once __DIR__ . '/Config.php';
+require_once __DIR__ . '/lib/Core.php';
 
 main();
 
