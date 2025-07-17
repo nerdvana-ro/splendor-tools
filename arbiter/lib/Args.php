@@ -63,10 +63,6 @@ class Args {
     if (count($this->binaries) != count($this->names)) {
       throw new SplendorException('Numărul de binare nu corespunde cu numărul de nume.');
     }
-    if (count($this->binaries) > Config::MAX_PLAYERS) {
-      $msg = sprintf('Numărul maxim de jucători este %d.', Config::MAX_PLAYERS);
-      throw new SplendorException($msg);
-    }
     if (Util::hasDuplicates($this->names)) {
       throw new SplendorException('Jucătorii trebuie să aibă nume distincte.');
     }
