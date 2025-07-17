@@ -1,6 +1,6 @@
 <?php
 
-class Tournament {
+class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
   private int $numGames;
   private int $curGame;
   private array $playerInfo;

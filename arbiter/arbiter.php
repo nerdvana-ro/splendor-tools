@@ -19,8 +19,8 @@ function main(): void {
     Card::loadCsv(__DIR__ . '/../cards.csv');
     Noble::loadCsv(__DIR__ . '/../nobles.csv');
 
-    $t = new Tournament($args);
-    $t->run();
+    $m = new MatchS($args);
+    $m->run();
   } catch (SplendorException $e) {
     Log::fatal($e->getMessage());
   }
