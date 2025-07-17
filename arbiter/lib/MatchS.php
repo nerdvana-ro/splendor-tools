@@ -6,7 +6,7 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
   private array $playerInfo;
   private string $saveDir;
   private bool $saveInputs;
-  private array $totals; // map de nume => scor
+  private MatchResult $totals;
 
   function __construct(array $playerInfo, int $numGames, int $seed,
                        string $saveDir, bool $saveInputs) {
@@ -15,9 +15,10 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
     $this->initRng($seed);
     $this->saveDir = $saveDir;
     $this->saveInputs = $saveInputs;
+    $this->totals = new MatchResult();
 
     foreach ($this->playerInfo as $rec) {
-      $this->totals[$rec['name']] = 0;
+      $this->totals->addPlayer($rec['name']);
     }
   }
 
@@ -91,11 +92,10 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
     }
 
     foreach ($results as $res) {
-      if ($res->winner) {
-        $this->totals[$res->name] += 1.0 / $numWinners;
-      }
+      $score = ($res->winner) ? (1.0 / $numWinners) : 0;
+      $this->totals->grant($res->name, $score, $res->score);
     }
-    arsort($this->totals);
+    $this->totals->sort();
 
     $this->printResults($results, $numRounds);
     $this->printTotals();
@@ -119,10 +119,12 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
   private function printTotals(): void {
     Log::success('');
     Log::success('==== Totaluri după %d partide', [ $this->curGame ]);
-    Log::success('    nume                puncte');
-    Log::success('    --------------------------');
-    foreach ($this->totals as $name => $points) {
-      Log::success('    %-20s %5.2f', [ $name, $points ]);
+    Log::success('    nume                puncte   prestigiu');
+    Log::success('    --------------------------------------');
+    foreach (array_keys($this->totals->map) as $name) {
+      $score = $this->totals->getScore($name);
+      $prestige = $this->totals->getPrestige($name);
+      Log::success('    %-20s %5.2f     %4d', [ $name, $score, $prestige ]);
     }
     Log::success('');
   }
