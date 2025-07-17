@@ -9,8 +9,6 @@ function main(): void {
   try {
     $args = new Args();
     $args->parse();
-    Card::loadCsv(__DIR__ . '/../cards.csv');
-    Noble::loadCsv(__DIR__ . '/../nobles.csv');
 
     $m = new MatchS(
       $args->getPlayers(),
