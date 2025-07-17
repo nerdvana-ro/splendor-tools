@@ -1,9 +1,9 @@
 <?php
 
 class Interactor {
-  const string INPUT_FILE = '/tmp/input.txt';
-  const string OUTPUT_FILE = '/tmp/output.txt';
-  const string ERROR_FILE = '/tmp/error.txt';
+  private string $inputFile;
+  private string $outputFile;
+  private string $errorFile;
 
   private string $binary;
   private string $input;
@@ -13,6 +13,10 @@ class Interactor {
   private array $kibitzes; // Liniile chibițate, fără prefixul „kibitz ”.
 
   function __construct(string $binary, string $input) {
+    $pid = getmypid();
+    $this->inputFile  = "/tmp/input_$pid.txt";
+    $this->outputFile = "/tmp/output_$pid.txt";
+    $this->errorFile  = "/tmp/error_$pid.txt";
     $this->binary = $binary;
     $this->input = $input;
     $this->time = 0.0;
@@ -33,10 +37,10 @@ class Interactor {
   }
 
   function parseAgentOutput(): void {
-    $contents = @file_get_contents(self::OUTPUT_FILE);
+    $contents = @file_get_contents($this->outputFile);
 
     if ($contents === false) {
-      Log::warn('Fișierul %s nu există.', [ self::OUTPUT_FILE ]);
+      Log::warn('Fișierul %s nu există.', [ $this->outputFile]);
       return;
     }
 
@@ -46,16 +50,16 @@ class Interactor {
   }
 
   function parseAgentError(): void {
-    if (!file_exists(self::ERROR_FILE)) {
+    if (!file_exists($this->errorFile)) {
       return;
     }
 
-    $contents = file_get_contents(self::ERROR_FILE);
+    $contents = file_get_contents($this->errorFile);
     if ($contents) {
       Log::debug("Programul a tipărit la stderr:\n{$contents}");
     }
 
-    $lines = file(self::ERROR_FILE);
+    $lines = file($this->errorFile);
     foreach ($lines as $line) {
       if (Str::startsWith($line, Config::KIBITZ_PREFIX)) {
         $suf = substr($line, strlen(Config::KIBITZ_PREFIX));
@@ -80,18 +84,18 @@ class Interactor {
   private function interactAgent(): void {
     $dir = dirname($this->binary);
     chdir($dir);
-    file_put_contents(self::INPUT_FILE, $this->input);
-    @unlink(self::OUTPUT_FILE);
-    @unlink(self::ERROR_FILE);
+    file_put_contents($this->inputFile, $this->input);
+    @unlink($this->outputFile);
+    @unlink($this->errorFile);
 
     Log::debug('Apelez %s în directorul %s cu intrarea:', [ $this->binary, $dir ]);
     Log::debug(trim($this->input));
     $cmd = sprintf('ulimit -t %d && "%s" < %s > %s 2> %s',
                    Config::TIME_LIMIT_PER_MOVE,
                    $this->binary,
-                   self::INPUT_FILE,
-                   self::OUTPUT_FILE,
-                   self::ERROR_FILE);
+                   $this->inputFile,
+                   $this->outputFile,
+                   $this->errorFile);
 
     $resultCode = self::runCmd($cmd);
     if ($resultCode !== 0) {
