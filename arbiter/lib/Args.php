@@ -9,6 +9,7 @@ class Args {
     'seed:',
     'save:',
     'save-inputs',
+    'table-size:',
   ];
 
 
@@ -18,6 +19,7 @@ class Args {
   private int $seed;
   private string $saveDir;
   private bool $saveInputs;
+  private int $tableSize;
 
   // PHP's getopt() will return a string if an argument appears once, but an
   // array if the argument appears multiple times. Convert the first situation
@@ -39,6 +41,7 @@ class Args {
     $this->seed = $opts['seed'] ?? 0;
     $this->saveDir = $opts['save'] ?? '';
     $this->saveInputs = isset($opts['save-inputs']);
+    $this->tableSize = $opts['table-size'] ?? 0;
     $this->validate();
   }
 
@@ -120,5 +123,9 @@ class Args {
 
   function getSaveInputs(): bool {
     return $this->saveInputs;
+  }
+
+  function getTableSize(): int {
+    return $this->tableSize;
   }
 }

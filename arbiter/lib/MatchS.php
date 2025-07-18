@@ -86,7 +86,7 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
 
     foreach ($results as $res) {
       $score = ($res->winner) ? (1.0 / $numWinners) : 0;
-      $this->results->grant($res->name, $score, $res->score);
+      $this->results->grant($res->name, $score, $res->score, 1);
     }
 
     $this->printResults($results, $numRounds);

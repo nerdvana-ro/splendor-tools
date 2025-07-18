@@ -41,7 +41,7 @@ class Tournament2 {
   }
 
   private function runRounds(): void {
-    $numRounds = count($this->playerInfo) - 1;
+    $numRounds = count($this->roster) - 1;
     for ($r = 1; $r <= $numRounds; $r++) {
       $msg = "                Runda {$r} / {$numRounds}               ";
       Log::successBanner($msg);
