@@ -44,8 +44,8 @@ class MatchResult {
     Log::success('    nume                partide puncte   prestigiu    prestigiu mediu');
     Log::success('    -----------------------------------------------------------------');
     foreach ($this->map as $name => $rec) {
-      Log::success('    %-20s   %2d    %5.2f     %4d            %5.2f',
-                   [ $name,
+      Log::success('    %s   %2d    %5.2f     %4d            %5.2f',
+                   [ mb_str_pad($name, 20),
                      $rec['numGames'],
                      $rec['score'],
                      $rec['prestige'],

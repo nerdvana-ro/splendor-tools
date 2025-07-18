@@ -101,8 +101,8 @@ class MatchS { // Deoarece „match” este cuvînt rezervat în PHP. Boo!
     Log::success('    ----------------------------------------------------------------');
     foreach ($results as $r) {
       $mark = $r->winner ? '✅' : '  ';
-      Log::success('    %-20s %2d   %2d        %s          %0.3f / %0.3f',
-                   [ $r->name, $r->score, $r->cards, $mark,
+      Log::success('    %s %2d   %2d        %s          %0.3f / %0.3f',
+                   [ mb_str_pad($r->name, 20), $r->score, $r->cards, $mark,
                      $r->sumTimes / 1000, $r->maxTime / 1000 ]);
     }
     Log::success('');
